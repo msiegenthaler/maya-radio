@@ -9,6 +9,10 @@ wood2 = 4;
 front(width, height, wood1, wood2);
 translate([height-width/2-height*PI/2,height+5]) around(width, height, depth, wood2, wood1);
 
+// DEBUG: rotate the around under the front, so we see if it matches
+translate([height/2+(width-height)/2,-5]) rotate(180) around(width, height, depth, wood2, wood1);
+translate([width-height/2-(width-height)/2,-depth-5]) around(width, height, depth, wood2, wood1);
+
 module front(width, height, materialThickness, aroundMaterialThickness)
 {
   module grill() speakerGrill(height/2*.84, .75, 4);
@@ -22,16 +26,21 @@ module front(width, height, materialThickness, aroundMaterialThickness)
 module side(width, height, materialThickness, aroundMaterialThickness)
 {
   basewidth = width - height;
-  translate([height/2, 0]) difference() {
+  translate([height/2, 0]) {
     union() {
       square([basewidth, height]);
       translate([basewidth, height/2]) circle(height/2);
       translate([0, height/2]) circle(height/2);
-    };
-    translate([0,height])
-      woodjoint(basewidth, true, true, materialThickness, aroundMaterialThickness);
-    translate([0,0])
-      woodjoint(basewidth, true, false, materialThickness, aroundMaterialThickness);
+      //will join long side of around
+      translate([0,height])
+        woodjoint(basewidth, false, false, materialThickness, aroundMaterialThickness);
+      //will join short, left side of around
+      translate([0,0])
+        woodjoint(basewidth/2, false, true, materialThickness, aroundMaterialThickness);
+      //will join short, right side of around
+      translate([basewidth/2,0])
+        woodjoint(basewidth/2, false, true, materialThickness, aroundMaterialThickness);
+    }
   };
 }
 
@@ -65,9 +74,21 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
     translate([offset, 0]) livingHinge(wrapside, depth, materialThickness);
     translate([offset+basewidth+wrapside, 0]) livingHinge(wrapside, depth, materialThickness);
     translate([wrapside+basewidth/2,0])
-      woodjoint(basewidth, false, false, materialThickness, sideMaterialThickness);
+    //long side joints
+    woodjoint(basewidth, false, false, materialThickness, sideMaterialThickness);
     translate([wrapside+basewidth/2,depth])
       woodjoint(basewidth, false, true, materialThickness, sideMaterialThickness);
+    // short, left joints
+    translate([0,0])
+      woodjoint(basewidth/2, false, false, materialThickness, sideMaterialThickness);
+    translate([0, depth])
+      woodjoint(basewidth/2, false, true, materialThickness, sideMaterialThickness);
+    // short, right joints
+    translate([length-basewidth/2,0]) {
+      woodjoint(basewidth/2, false, false, materialThickness, sideMaterialThickness);
+      translate([0, depth])
+        woodjoint(basewidth/2, false, true, materialThickness, sideMaterialThickness);
+    }
   }
 }
 
@@ -75,12 +96,12 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
 module woodjoint(length, mode, below, myMaterialThickness, otherMaterialThickness)
 {
   w = max(myMaterialThickness, otherMaterialThickness);
-  tabwidth = (length/w > 14) ? w*2 : w;
+  w2 = (length/w > 14) ? w*2 : w;
+  count = floor(length / w2 / 2) * 2 + 1;
+  tabwidth = length / count;
   tabheight = otherMaterialThickness;
-  count = floor(length / tabwidth);
-  offset = (length - tabwidth*count) / 2;
   start = mode ? 0 : 1;
-  translate([offset,(below?-tabheight:0)]) for (i = [start:2:count-1]) {
+  translate([0,(below?-tabheight:0)]) for (i = [start:2:count-1]) {
     translate([i*tabwidth,0]) square([tabwidth,tabheight]);
   }
 }
