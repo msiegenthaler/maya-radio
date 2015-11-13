@@ -1,31 +1,38 @@
-width = 300;
+width = 270;
 height = 100;
 depth = 60;
 
 cutWidth = .4;
 
-front(width, height);
-translate([0,height+5]) around(width, height, depth, 6);
+wood1 = 6;
+wood2 = 4;
+front(width, height, wood1, wood2);
+translate([height-width/2-height*PI/2,height+5]) around(width, height, depth, wood2, wood1);
 
-module front(width, height)
+module front(width, height, materialThickness, aroundMaterialThickness)
 {
   module grill() speakerGrill(height/2*.84, .75, 4);
   difference() {
-    side(width, height);
+    side(width, height, materialThickness, aroundMaterialThickness);
     translate([height/2, height/2]) grill();
     translate([width - height/2, height/2]) grill();
   }
 }
 
-module side(width, height)
+module side(width, height, materialThickness, aroundMaterialThickness)
 {
-  translate([height/2, 0]) union()
-  {
-    basewidth = width - height;
-    square([basewidth, height]);
-    translate([basewidth, height/2]) circle(height/2);
-    translate([0, height/2]) circle(height/2);
-  };  
+  basewidth = width - height;
+  translate([height/2, 0]) difference() {
+    union() {
+      square([basewidth, height]);
+      translate([basewidth, height/2]) circle(height/2);
+      translate([0, height/2]) circle(height/2);
+    };
+    translate([0,height])
+      woodjoint(basewidth, true, true, materialThickness, aroundMaterialThickness);
+    translate([0,0])
+      woodjoint(basewidth, true, false, materialThickness, aroundMaterialThickness);
+  };
 }
 
 module speakerGrill(radius, holeSize, gap)
@@ -45,7 +52,7 @@ module speakerGrill(radius, holeSize, gap)
 }
 
 // Generates the wood that wraps around the box, forming the depth
-module around(width, height, depth, materialThickness)
+module around(width, height, depth, materialThickness, sideMaterialThickness)
 {
   basewidth = width - height;
   wrapside = height*PI/2;
@@ -57,6 +64,24 @@ module around(width, height, depth, materialThickness)
     square([length, depth]);
     translate([offset, 0]) livingHinge(wrapside, depth, materialThickness);
     translate([offset+basewidth+wrapside, 0]) livingHinge(wrapside, depth, materialThickness);
+    translate([wrapside+basewidth/2,0])
+      woodjoint(basewidth, false, false, materialThickness, sideMaterialThickness);
+    translate([wrapside+basewidth/2,depth])
+      woodjoint(basewidth, false, true, materialThickness, sideMaterialThickness);
+  }
+}
+
+//cuts out tabs, so it can be 'docked in' in a 90deg angle with another piece (with inverted mode)
+module woodjoint(length, mode, below, myMaterialThickness, otherMaterialThickness)
+{
+  w = max(myMaterialThickness, otherMaterialThickness);
+  tabwidth = (length/w > 14) ? w*2 : w;
+  tabheight = otherMaterialThickness;
+  count = floor(length / tabwidth);
+  offset = (length - tabwidth*count) / 2;
+  start = mode ? 0 : 1;
+  translate([offset,(below?-tabheight:0)]) for (i = [start:2:count-1]) {
+    translate([i*tabwidth,0]) square([tabwidth,tabheight]);
   }
 }
 
