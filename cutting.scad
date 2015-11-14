@@ -5,13 +5,44 @@ depth = 60;
 cutWidth = .4;
 
 wood1 = 6;
-wood2 = 4;
-front(width, height, wood1, wood2);
-translate([height-width/2-height*PI/2,height+5]) around(width, height, depth, wood2, wood1);
+wood2 = 6;
 
-// DEBUG: rotate the around under the front, so we see if it matches
-translate([height/2+(width-height)/2,-5]) rotate(180) around(width, height, depth, wood2, wood1);
-translate([width-height/2-(width-height)/2,-depth-5]) around(width, height, depth, wood2, wood1);
+3d_body();
+
+
+module 3d_body()
+{
+  //Front
+  linear_extrude(wood1) front(width, height, wood1, wood2);
+
+  //Back
+  translate([0,0,depth-wood2]) linear_extrude(wood1) back(width, height, wood1, wood2);
+
+  //Around
+  around_side_length = height*PI/2 * 1.05;
+  basewidth = width-height;
+  add_show_around = 0.4 * basewidth;
+  //top around
+  translate([height/2, height+wood2]) rotate([90,0])
+    linear_extrude(wood2) intersection() {
+      around(width, height, depth, wood2, wood1);
+      translate([-add_show_around,0])
+        square([basewidth+add_show_around*2, depth]);
+    }
+  //bottom around
+  translate([height/2+basewidth/2, 0]) rotate([90,0])
+    linear_extrude(wood2) intersection() {
+      translate([around_side_length+basewidth/2,0]) around(width, height, depth, wood2, wood1);
+      square([basewidth/2+add_show_around, depth]);
+    }
+  translate([-add_show_around+height/2, 0]) rotate([90,0])
+    linear_extrude(wood2) intersection() {
+      translate([-basewidth-around_side_length+add_show_around,0]) around(width, height, depth, wood2, wood1);
+      square([basewidth/2+add_show_around, depth]);
+    }
+
+}
+
 
 module front(width, height, materialThickness, aroundMaterialThickness)
 {
@@ -21,6 +52,11 @@ module front(width, height, materialThickness, aroundMaterialThickness)
     translate([height/2, height/2]) grill();
     translate([width - height/2, height/2]) grill();
   }
+}
+
+module back(width, height, materialThickness, aroundMaterialThickness)
+{
+  side(width, height, materialThickness, aroundMaterialThickness);
 }
 
 module side(width, height, materialThickness, aroundMaterialThickness)
@@ -64,11 +100,11 @@ module speakerGrill(radius, holeSize, gap)
 module around(width, height, depth, materialThickness, sideMaterialThickness)
 {
   basewidth = width - height;
-  wrapside = height*PI/2;
+  wrapside = height*PI/2 * 1.05; // add 5% to reduce the stress on the material
   length = 2*(basewidth + wrapside);
 
   offset = basewidth/2;
-  difference()
+  translate([-wrapside-basewidth/2,0]) difference()
   {
     square([length, depth]);
     translate([offset, 0]) livingHinge(wrapside, depth, materialThickness);
@@ -115,7 +151,6 @@ module livingHinge(width, height, materialThickness)
   maxHingeLength = 35;
   connectingLength = materialThickness / 2;
   hingesPerRow = ceil(height / maxHingeLength);
-  echo("hinges per row", hingesPerRow);
   hingeLength = height / hingesPerRow;
   hingeLongCut = hingeLength - connectingLength;
   hingeShortCut = hingeLongCut/2;
