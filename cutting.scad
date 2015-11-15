@@ -7,30 +7,57 @@ cutWidth = .4;
 wood1 = 6;
 wood2 = 6;
 
-// 3d_body();
+
 // lasercut();
 
+//Lasercut for testing stuff
 switch_lasercut_test();
+
+
+//Validations - the see if the finished product will look like imagined
+//3d_body();
+//switch_3d_validation();
 
 
 module switch_lasercut_test() {
   width = 80;
   height = 70;
+  wood = 4;
 
   difference() {
     color("Plum") square([width, height]);
-    translate([width/2,0]) switch_holder(true, height);
+    translate([width/2,0]) switch_holder(true, height, wood);
   }
 
   translate([width+10,0]) difference() {
-    color("PapayaWhip") square([width,height]);
-    translate([width/2,0]) switch_holder(false, height);
+    color("PaleTurquoise") square([width,height]);
+    translate([width/2,0]) switch_holder(false, height, wood);
   }
 }
 
-
-module switch_holder(mode, height) {
+// To see if the switch actually fits into the enclosure..
+module switch_3d_validation() {
+  width = 80;
+  height = 70;
   wood = 4;
+
+  color("Plum") linear_extrude(wood) {
+    difference() {
+      square([width, height]);
+      translate([width/2,0]) switch_holder(true, height, wood);
+    }
+  }
+
+  translate([width/2-wood/2,0,width/2+wood/2]) rotate([0,90])
+    color("PaleTurquoise") linear_extrude(wood) {
+      difference() {
+        square([width, height]);
+        translate([width/2,0]) switch_holder(false, height, wood);
+      }
+    }
+}
+
+module switch_holder(mode, height, wood) {
   holdback_diameter = 20;
   holdback_thickness = 2;
   switch_travel = 2;
