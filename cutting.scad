@@ -7,8 +7,19 @@ cutWidth = .4;
 wood1 = 6;
 wood2 = 6;
 
-3d_body();
+// 3d_body();
+lasercut();
 
+
+module lasercut() {
+  gap = 2;
+  front(width, height, wood1, wood2);
+  translate([0, height+gap+wood2*2]) back(width, height, wood1, wood2);
+
+  around_side_length = height*PI/2 * 1.05;
+  basewidth = width-height;
+  translate([-gap, around_side_length+basewidth/2]) rotate(90) around(width, height, depth, wood2, wood1);
+}
 
 module 3d_body()
 {
