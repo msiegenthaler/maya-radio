@@ -19,12 +19,12 @@ module switch_lasercut_test() {
 
   difference() {
     color("Plum") square([width, height]);
-    translate([width/2,0]) switch_holder(false, height);
+    translate([width/2,0]) switch_holder(true, height);
   }
 
   translate([width+10,0]) difference() {
     color("PapayaWhip") square([width,height]);
-    translate([width/2,0]) switch_holder(true, height);
+    translate([width/2,0]) switch_holder(false, height);
   }
 }
 
@@ -39,7 +39,9 @@ module switch_holder(mode, height) {
   switch_body_width = 7;
   switch_body_height = 7;
   pin_length = 4;
-  switch_height = switch_neck_height + switch_body_width + pin_length;
+  pin_width = 1;
+  pin_offset = 0.5;
+  switch_height = switch_neck_height + switch_body_width;
   cutout_height = height - switch_height - holdback_thickness;
 
   module cutout1() {
@@ -49,6 +51,12 @@ module switch_holder(mode, height) {
         square([switch_neck_width, switch_neck_height - switch_travel]);
       translate([(holdback_diameter - switch_body_width)/2,holdback_thickness + switch_neck_height])
         square([switch_body_width, switch_body_height]);
+      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_height]) {
+        translate([pin_offset,0])
+          square([pin_width, pin_length]);
+        translate([switch_body_width - pin_offset - pin_width,0])
+          square([pin_width, pin_length]);
+      }
       translate([(holdback_diameter - wood)/2, height - cutout_height/2])
         square([wood,cutout_height/2]);
     }
@@ -57,7 +65,7 @@ module switch_holder(mode, height) {
     union() {
       square([holdback_diameter, holdback_thickness+switch_travel]);
       translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_travel])
-        square([switch_body_width,switch_body_height + switch_neck_height - switch_travel + pin_length]);
+        square([switch_body_width,switch_body_height + switch_neck_height - switch_travel]);
       translate([(holdback_diameter - wood)/2, switch_height + holdback_thickness])
         square([wood,cutout_height/2]);
     }
