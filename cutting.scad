@@ -8,7 +8,55 @@ wood1 = 6;
 wood2 = 6;
 
 // 3d_body();
-lasercut();
+// lasercut();
+
+switch_holder(60);
+
+
+module switch_holder(height) {
+  wood = 4;
+  holdback_diameter = 20;
+  holdback_thickness = 2;
+  switch_travel = 2;
+  switch_neck_width = 4;
+  switch_neck_height = 5;
+  switch_body_width = 7;
+  switch_body_height = 7;
+  pin_length = 4;
+  switch_height = switch_neck_height + switch_body_width + pin_length;
+  cutout_height = height - switch_height - holdback_thickness;
+
+  module cutout1() {
+    union() {
+      square([holdback_diameter, holdback_thickness + switch_travel]);
+      translate([(holdback_diameter - switch_neck_width)/2, holdback_thickness + switch_travel])
+        square([switch_neck_width, switch_neck_height - switch_travel]);
+      translate([(holdback_diameter - switch_body_width)/2,holdback_thickness + switch_neck_height])
+        square([switch_body_width, switch_body_height]);
+      translate([(holdback_diameter - wood)/2, height - cutout_height/2])
+        square([wood,cutout_height/2]);
+    }
+  }
+  module cutout2() {
+    union() {
+      square([holdback_diameter, holdback_thickness+switch_travel]);
+      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_travel])
+        square([switch_body_width,switch_body_height + switch_neck_height - switch_travel + pin_length]);
+      translate([(holdback_diameter - wood)/2, switch_height + holdback_thickness])
+        square([wood,cutout_height/2]);
+    }
+  }
+
+  difference() {
+    color("Plum") square([40, height]);
+    translate([10,0]) cutout1();
+  }
+
+  translate([60,0]) difference() {
+    color("PapayaWhip") square([40,height]);
+    translate([10,0]) cutout2();
+  }
+}
 
 
 module lasercut() {
