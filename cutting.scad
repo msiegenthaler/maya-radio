@@ -10,10 +10,26 @@ wood2 = 6;
 // 3d_body();
 // lasercut();
 
-switch_holder(60);
+switch_lasercut_test();
 
 
-module switch_holder(height) {
+module switch_lasercut_test() {
+  width = 80;
+  height = 70;
+
+  difference() {
+    color("Plum") square([width, height]);
+    translate([width/2,0]) switch_holder(false, height);
+  }
+
+  translate([width+10,0]) difference() {
+    color("PapayaWhip") square([width,height]);
+    translate([width/2,0]) switch_holder(true, height);
+  }
+}
+
+
+module switch_holder(mode, height) {
   wood = 4;
   holdback_diameter = 20;
   holdback_thickness = 2;
@@ -47,15 +63,8 @@ module switch_holder(height) {
     }
   }
 
-  difference() {
-    color("Plum") square([40, height]);
-    translate([10,0]) cutout1();
-  }
-
-  translate([60,0]) difference() {
-    color("PapayaWhip") square([40,height]);
-    translate([10,0]) cutout2();
-  }
+  if (mode) translate([-holdback_diameter/2, 0]) cutout1();
+  else translate([-holdback_diameter/2, 0]) cutout2();
 }
 
 
