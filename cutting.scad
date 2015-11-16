@@ -23,15 +23,103 @@ module switch_lasercut_test() {
   width = 80;
   height = 70;
   wood = 4;
+  gap = 5;
+  lashOffset = 10;
+  lashWidth = 2*wood;
+  button_dia = 10;
+  holdback_dia = 20;
 
   difference() {
-    color("Plum") square([width, height]);
+    color("Plum") union() {
+      square([width, height]);
+      translate([lashOffset, -wood]) square([lashWidth,wood]);
+      translate([width - lashOffset - lashWidth, -wood]) square([lashWidth,wood]);
+      translate([lashOffset, height]) square([lashWidth,wood]);
+      translate([width - lashOffset - lashWidth, height]) square([lashWidth,wood]);
+    }
     translate([width/2,0]) switch_holder(true, height, wood);
   }
 
-  translate([width+10,0]) difference() {
-    color("PaleTurquoise") square([width,height]);
+  translate([width+gap,0]) difference() {
+    color("PaleTurquoise") union() {
+      square([width,height]);
+      translate([lashOffset, -wood]) square([lashWidth,wood]);
+      translate([width - lashOffset - lashWidth, -wood]) square([lashWidth,wood]);
+      translate([lashOffset, height]) square([lashWidth,wood]);
+      translate([width - lashOffset - lashWidth, height]) square([lashWidth,wood]);
+    }
     translate([width/2,0]) switch_holder(false, height, wood);
+  }
+
+  translate([0, height+wood+gap]) difference() {
+    color("Gold") square([width, width]);
+    translate([lashOffset, (width - wood)/2])
+      square([lashWidth, wood]);
+    translate([width - lashOffset - lashWidth, (width - wood)/2])
+      square([lashWidth, wood]);
+    translate([(width - wood)/2, lashOffset])
+      square([wood, lashWidth]);
+    translate([(width - wood)/2, width - lashOffset - lashWidth])
+      square([wood, lashWidth]);
+    translate([width/2,width/2])
+      circle(d=button_dia);
+  }
+
+  translate([0, height+wood+width+2*gap]) difference() {
+    color("DodgerBlue") square([width, width]);
+    translate([lashOffset, (width - wood)/2])
+      square([lashWidth, wood]);
+    translate([width - lashOffset - lashWidth, (width - wood)/2])
+      square([lashWidth, wood]);
+    translate([(width - wood)/2, lashOffset])
+      square([wood, lashWidth]);
+    translate([(width - wood)/2, width - lashOffset - lashWidth])
+      square([wood, lashWidth]);
+  }
+
+  translate([width+gap, height+wood+gap]) {
+    color("IndianRed") union() {
+      translate([button_dia/2, button_dia/2]) circle(d=button_dia);
+      translate([button_dia/2*3+gap, button_dia/2]) circle(d=button_dia);
+      translate([button_dia/2*5+gap*2, button_dia/2]) circle(d=button_dia-0.5);
+      translate([button_dia/2*7+gap*3, button_dia/2]) circle(d=button_dia-0.5);
+      translate([button_dia/2*9+gap*4, button_dia/2]) circle(d=button_dia-1);
+      translate([button_dia/2*11+gap*5, button_dia/2]) circle(d=button_dia-1);
+    }
+    color("LightBlue") translate([0,button_dia+gap]) union() {
+      translate([holdback_dia/2, holdback_dia/2]) circle(d=holdback_dia);
+      translate([holdback_dia/2*3+gap, holdback_dia/2]) circle(d=holdback_dia-0.5);
+      translate([holdback_dia/2*5+gap*2, holdback_dia/2]) circle(d=holdback_dia-1);
+      translate([holdback_dia/2, holdback_dia/2*3+gap]) difference() {
+        delta = 1;
+        holdback_plus = holdback_dia/2+delta;
+        circle(holdback_plus);
+        translate([-holdback_plus,-wood/2]) square([delta, wood]);
+        translate([holdback_plus-delta,-wood/2]) square([delta, wood]);
+        translate([-wood/2,-holdback_plus]) square([wood,delta]);
+        translate([-wood/2,holdback_plus-delta]) square([wood,delta]);
+      }
+      translate([holdback_dia*3/2+gap, holdback_dia/2*3+gap]) difference() {
+        delta = 3;
+        holdback_plus = holdback_dia/2+delta;
+        circle(holdback_plus);
+        translate([-holdback_plus,-wood/2]) square([delta, wood]);
+        translate([holdback_plus-delta,-wood/2]) square([delta, wood]);
+        translate([-wood/2,-holdback_plus]) square([wood,delta]);
+        translate([-wood/2,holdback_plus-delta]) square([wood,delta]);
+      }
+      translate([holdback_dia*5/2+gap*2, holdback_dia/2*3+gap]) difference() {
+        delta = 2;
+        ep = 0.1;
+        holdback_plus = holdback_dia/2+delta;
+        woodp = wood+ep;
+        circle(holdback_plus);
+        translate([-holdback_plus,-woodp/2]) square([delta+ep, woodp]);
+        translate([holdback_plus-delta-ep,-woodp/2]) square([delta+ep, woodp]);
+        translate([-woodp/2,-holdback_plus]) square([woodp,delta]);
+        translate([-woodp/2,holdback_plus-delta]) square([woodp,delta]);
+      }
+    }
   }
 }
 
