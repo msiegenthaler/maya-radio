@@ -234,7 +234,7 @@ module switch_holder(mode, height, wood) {
 
 module lasercut() {
   gap = 2;
-  front(width, height, wood1, wood2);
+  front(width, height, grill_radius, wood1, wood2);
   translate([0, height+gap+wood2*2]) back(width, height, wood1, wood2);
 
   around_side_length = height*PI/2 * 1.05;
@@ -245,7 +245,7 @@ module lasercut() {
 module 3d_body()
 {
   //Front
-  linear_extrude(wood1) front(width, height, wood1, wood2);
+  linear_extrude(wood1) front(width, height, grill_radius, wood1, wood2);
 
   //Back
   translate([0,0,depth-wood2]) linear_extrude(wood1) back(width, height, wood1, wood2);
@@ -276,9 +276,9 @@ module 3d_body()
 }
 
 
-module front(width, height, materialThickness, aroundMaterialThickness)
+module front(width, height, grill_radius, materialThickness, aroundMaterialThickness)
 {
-  module grill() speakerGrill(height/2*.84, .75, 4);
+  module grill() speakerGrill(grill_radius, .75, 4);
   difference() {
     side(width, height, materialThickness, aroundMaterialThickness);
     translate([height/2, height/2]) grill();
