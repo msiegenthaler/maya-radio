@@ -156,7 +156,7 @@ module switch_3d_validation() {
 
 module switch_holder(mode, height, wood) {
   holdback_diameter = 20;
-  holdback_thickness = 2;
+  holdback_thickness = 4;
   switch_travel = 2;
   switch_neck_width = 4;
   switch_neck_height = 5;
@@ -173,7 +173,7 @@ module switch_holder(mode, height, wood) {
       square([holdback_diameter, holdback_thickness + switch_travel]);
       translate([(holdback_diameter - switch_neck_width)/2, holdback_thickness + switch_travel])
         square([switch_neck_width, switch_neck_height - switch_travel]);
-      translate([(holdback_diameter - switch_body_width)/2,holdback_thickness + switch_neck_height])
+      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_neck_height])
         square([switch_body_width, switch_body_height]);
       translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_height]) {
         translate([pin_offset,0])
