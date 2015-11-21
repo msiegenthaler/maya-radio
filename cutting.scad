@@ -1,14 +1,39 @@
-width = 270;
-height = 100;
+width = 300;
+height = 120;
+grill_radius = 45;
 depth = 60;
 
 cutWidth = .4;
 
-wood1 = 6;
-wood2 = 6;
+wood1 = 4;
+wood2 = 4;
 
 
-lasercut();
+button_size = 10;
+buttons_x = 4;
+buttons_y = 3;
+button_area = [height, 15, width-height, height-65];
+
+buttons = vector_flatten([for (y = button_rows()) button_row(y)]);
+
+function button_rows() =
+  vector_distribute(buttons_y, button_area[3]-button_area[1]) +
+            vector_of_length(buttons_x, button_area[1]);
+function button_row(y) =
+  vector_extend(
+    vector_distribute(buttons_x, button_area[2]-button_area[0]) +
+    vector_of_length(buttons_x, button_area[0])
+  , [y]);
+
+
+//Testing
+difference() {
+  front(width, height-wood2*2, grill_radius, wood1, wood2);
+  buttons_holes(buttons, button_size);
+}
+
+
+//lasercut();
 
 //Lasercut for testing stuff
 //switch_lasercut_test();
@@ -152,6 +177,13 @@ module switch_3d_validation() {
         translate([width/2,0]) switch_holder(false, height, wood);
       }
     }
+}
+
+
+module buttons_holes(buttons, button_size) {
+  for (pos = buttons) {
+    translate(pos) circle(d=button_size);
+  }
 }
 
 module switch_holder(mode, height, wood) {
@@ -367,3 +399,13 @@ module livingHinge(width, height, materialThickness)
     }
   }
 }
+
+
+
+// Vector Utilities
+function vector_of_length(count, v=0) = [for (i = [1:count]) v];
+function vector_of_length_index(count) = [for (i = [0:count-1]) i];
+function vector_distribute(count, width) =
+  vector_of_length_index(count, 0) * (width/(count-1));
+function vector_extend(vector, e) = [for (v = vector) concat([v],e)];
+function vector_flatten(vector) = [for (a=vector) for (b=a) b];
