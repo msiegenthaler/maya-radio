@@ -8,16 +8,25 @@ wood1 = 6;
 wood2 = 6;
 
 
-// lasercut();
+lasercut();
 
 //Lasercut for testing stuff
-switch_lasercut_test();
+//switch_lasercut_test();
+//grill_lasercut_test();
 
 
 //Validations - the see if the finished product will look like imagined
 //3d_body();
 //switch_3d_validation();
 
+
+module grill_lasercut_test() {
+  r = 40;
+  difference() {
+    square([r*2.2, r*2.2]);
+    translate([r*1.1,r*1.1]) speakerGrill(r, .25, 1);
+  }
+}
 
 module switch_lasercut_test() {
   width = 80;
