@@ -17,3 +17,7 @@ function vector_extend(vector, e) = [for (v = vector) concat([v],e)];
 
 // Flattens a matrix into a vector (or a matrix with one less deep).
 function vector_flatten(vector) = [for (a=vector) for (b=a) b];
+
+// Remove element (by index) from a vector.
+function vector_remove(vector, remove) =
+  vector_flatten([for (i=[0:len(vector)-1]) (i==remove) ? [] : [vector[i]]]);
