@@ -14,7 +14,10 @@ buttons_x = 4;
 buttons_y = 3;
 button_area = [height, 15, width-height, height-65];
 
-buttons = vector_flatten([for (y = button_rows()) button_row(y)]);
+buttons = concat(
+  vector_flatten([for (y = button_rows()) button_row(y)]),
+  button_row(height-20)
+  );
 
 function button_rows() =
   vector_distribute(buttons_y, button_area[3]-button_area[1]) +
@@ -166,3 +169,8 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
   }
 }
 
+module buttons_holes(buttons, button_size) {
+  for (pos = buttons) {
+    translate(pos) circle(d=button_size);
+  }
+}
