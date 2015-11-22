@@ -1,5 +1,5 @@
-width = 300;
-height = 120;
+height = 113;
+width = 310;
 grill_radius = 45;
 depth = 60;
 
@@ -12,11 +12,11 @@ wood2 = 4;
 button_size = 10;
 buttons_x = 4;
 buttons_y = 3;
-button_area = [height, 15, width-height, height-65];
+button_area = [height+5, 20, width-height-5, height-60];
 
 buttons = concat(
   vector_flatten([for (y = button_rows()) button_row(y)]),
-  button_row(height-20)
+  vector_remove(button_row(height-29),1)
   );
 
 function button_rows() =
