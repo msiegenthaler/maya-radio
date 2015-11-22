@@ -45,6 +45,9 @@ difference() {
 //switch_3d_validation();
 
 
+use <utils.scad>;
+
+
 module grill_lasercut_test() {
   r = 40;
   difference() {
@@ -399,13 +402,3 @@ module livingHinge(width, height, materialThickness)
     }
   }
 }
-
-
-
-// Vector Utilities
-function vector_of_length(count, v=0) = [for (i = [1:count]) v];
-function vector_of_length_index(count) = [for (i = [0:count-1]) i];
-function vector_distribute(count, width) =
-  vector_of_length_index(count, 0) * (width/(count-1));
-function vector_extend(vector, e) = [for (v = vector) concat([v],e)];
-function vector_flatten(vector) = [for (a=vector) for (b=a) b];
