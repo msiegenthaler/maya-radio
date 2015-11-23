@@ -46,11 +46,12 @@ module livingHinge(width, height, materialThickness)
 //  For a really dense, see-though pattern use holeSize=0.25, gap=1
 module speakerGrill(radius, holeSize, gap)
 {
-  count = round(radius*2*PI / gap);
+  r = radius - holeSize;
+  count = round(r*2*PI / gap);
   tick = 360 / count;
   for (a = [0:tick:360])
-    translate([sin(a)*radius,cos(a)*radius]) circle(holeSize);
-  if (radius > gap) speakerGrill(radius-gap, holeSize, gap);
+    translate([sin(a)*r,cos(a)*r]) circle(holeSize);
+  if (r > gap) speakerGrill(r-gap, holeSize, gap);
 }
 
 
