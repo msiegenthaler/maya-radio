@@ -21,3 +21,23 @@ function vector_flatten(vector) = [for (a=vector) for (b=a) b];
 // Remove element (by index) from a vector.
 function vector_remove(vector, remove) =
   vector_flatten([for (i=[0:len(vector)-1]) (i==remove) ? [] : [vector[i]]]);
+
+// Convert matrix to vector by keeping only the n-th column (zero based).
+function vector_extract(vector, index) =
+  [for (c=vector) c[index]];
+
+// Returns true if the vector contains the value.
+function vector_contains(vector, value) =
+  (vector==[]) ?
+    false :
+    vector[0]==value || vector_contains(vector_remove(vector,0), value);
+
+// Removes duplicates from vector.
+function vector_uniq(vector) =
+  (vector==[]) ? [] :
+    let (tail = vector_remove(vector,0),
+         uniq_tail = vector_uniq(tail),
+         head = vector[0])
+      vector_contains(uniq_tail, head) ?
+        uniq_tail :
+        concat([head], uniq_tail);
