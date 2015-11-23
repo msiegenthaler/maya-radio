@@ -40,7 +40,7 @@ function button_row(y) =
 
 
 
-//lasercut();
+lasercut();
 
 
 //Lasercut for testing stuff
@@ -48,7 +48,7 @@ function button_row(y) =
 //grill_lasercut_test();
 
 //Validations - the see if the finished product will look like imagined
-3d_body();
+// 3d_body();
 //switch_3d_validation();
 
 
@@ -59,12 +59,19 @@ use <switch.scad>
 
 module lasercut() {
   gap = 2;
-  front(width, height, grill_radius, wood, wood);
-  translate([0, height+gap+wood*2]) back(width, height, wood, wood);
-
   around_side_length = height*PI/2 * 1.05;
   basewidth = width-height;
-  translate([-gap, around_side_length+basewidth/2]) rotate(90) around(width, height, depth, wood, wood);
+
+  translate()
+    front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
+  translate([0, height+gap])
+    back_inner(width, height, wood, wood);
+  translate([0, 2*(height+gap)])
+    front_cover(width, height, grill_radius, buttons, button_size);
+  translate([0, 3*(height+gap)])
+    back_cover(width, height);
+  translate([-gap, around_side_length+basewidth/2]) rotate(90)
+    around(width, height, depth, wood, wood);
 }
 
 module 3d_body()
