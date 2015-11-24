@@ -111,20 +111,20 @@ module buttons_holes(buttons, button_size) {
   }
 }
 
-module switch_plane_horizontal(buttons, offset, width, depth)
+module switch_plane_horizontal(buttons, offset, width, depth, material)
 {
   difference() {
     translate([offset,0]) square([width, depth]);
     for (b=buttons)
-      translate([b[0],0]) switch_holder(false, depth, wood);
+      translate([b[0],0]) switch_holder(false, depth, material);
   }
 }
 
-module switch_plane_vertical(buttons, offset, height, depth)
+module switch_plane_vertical(buttons, offset, height, depth, material)
 {
   translate([depth,0]) rotate(90,0) difference() {
     translate([offset,0]) square([height, depth]);
     for (b=buttons)
-      translate([b[1],0]) switch_holder(false, depth, wood);
+      translate([b[1],0]) switch_holder(true, depth, material);
   }
 }
