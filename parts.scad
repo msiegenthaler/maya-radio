@@ -21,9 +21,9 @@ module front_inner(width, height, grill_radius, buttons, button_size, button_out
     }
     for (y=button_ys) {
       translate([inner_offset,y-innerMaterial/2])
-        square([innerMaterial*2, innerMaterial]);
-      translate([width-inner_offset-innerMaterial*2,y-innerMaterial/2])
-        square([innerMaterial*2, innerMaterial]);
+        square([innerMaterial, innerMaterial]);
+      translate([width-inner_offset-innerMaterial,y-innerMaterial/2])
+        square([innerMaterial, innerMaterial]);
     }
   }
 }
@@ -169,8 +169,8 @@ module switch_plane_horizontal(buttons, offset, width, depth, material, holdback
         square([holdback_outing,material]);
     }
     //top/bottom outing
-    translate([offset,-material]) square([material*2, material]);
-    translate([width+offset-material*2,-material]) square([material*2, material]);
+    translate([offset,-material]) square([material, material]);
+    translate([width+offset-material,-material]) square([material, material]);
     //back tabs
     translate([offset, depth]) woodclick(width, material);
   }
