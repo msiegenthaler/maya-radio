@@ -16,6 +16,17 @@ module woodjoint(length, mode, below, myMaterialThickness, otherMaterialThicknes
   }
 }
 
+// Creates bolts (resp cutouts for bolts) to fixate a piece of wood
+//  rectangular on top of a surface.
+module woodclick(length, material)
+{
+  count = floor(length / material / 8) * 4 + 1;
+  tabwidth = length / count;
+  for (i=[0:4:count-1]) {
+    translate([i*tabwidth, 0]) square([tabwidth,material]);
+  }
+}
+
 // Hinge that allows bending along the x-axis (hinges are vertical).
 module livingHinge(width, height, materialThickness)
 {

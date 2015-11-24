@@ -39,9 +39,29 @@ module front_cover(width, height, grill_radius, buttons, button_size)
   }
 }
 
-module back_inner(width, height, material, aroundMaterial)
+module back_inner(width, height, buttons, inner_offset, material, aroundMaterial, innerMaterial)
 {
-  side_inner(width, height, material, aroundMaterial);
+  button_xs = vector_uniq(vector_extract(buttons, 0));
+  button_ys = vector_uniq(vector_extract(buttons, 1));
+  difference() {
+    side_inner(width, height, material, aroundMaterial);
+    // horizontal inner tabs
+    for (y = button_ys) translate([inner_offset,y-innerMaterial/2])
+        woodclick(width-inner_offset*2, innerMaterial);
+    // vertical inner tabs
+    for (x = button_xs) {
+      translate([x-innerMaterial/2,aroundMaterial])
+        square([material,material*2]);
+      translate([x-innerMaterial/2,height-2*material-aroundMaterial])
+        square([material,material*2]);
+      col_buttons = vector_filter(buttons, 0, x);
+      echo(col_buttons);
+      for (i=[1:len(col_buttons)-1]) {
+        middle = (col_buttons[i-1][1]+col_buttons[i][1]) / 2;
+        translate([x-material/2,middle-aroundMaterial]) square([material,material*2]);
+      }
+    }
+  }
 }
 
 module back_cover(width, height)
@@ -141,14 +161,18 @@ module switch_plane_horizontal(buttons, offset, width, depth, material, holdback
       for (b=buttons)
         translate([b[0],0]) switch_holder(false, depth, material, holdback_diameter, holdback_inset);
     }
+    // outings at buttons
     for (b=buttons) {
       translate([b[0]-holdback_diameter/2-holdback_outing,-material])
         square([holdback_outing,material]);
       translate([b[0]+holdback_diameter/2,-material])
         square([holdback_outing,material]);
     }
+    //top/bottom outing
     translate([offset,-material]) square([material*2, material]);
     translate([width+offset-material*2,-material]) square([material*2, material]);
+    //back tabs
+    translate([offset, depth]) woodclick(width, material);
   }
 }
 
@@ -158,15 +182,24 @@ module switch_plane_vertical(buttons, offset, height, depth, material, holdback_
     translate([depth,0]) rotate(90,0) difference() {
       translate([offset,0]) square([height, depth]);
       for (b=buttons)
-        translate([b[1],0]) switch_holder(true, depth, material, holdback_diameter, holdback_inset);
+        translate([b[1],0]) switch_holder(true, depth+material, material, holdback_diameter, holdback_inset);
     }
+    // outings at buttons
     for (b=buttons) {
       translate([depth,b[1]-holdback_diameter/2-holdback_outing])
         square([material,holdback_outing]);
       translate([depth,b[1]+holdback_diameter/2])
         square([material,holdback_outing]);
     }
+    //top/bottom outing
     translate([depth,offset]) square([material, material]);
     translate([depth,height-offset]) square([material, material*2]);
+    //back tabs
+    for (i=[1:len(buttons)-1]) {
+      middle = (buttons[i-1][1]+buttons[i][1]) / 2;
+      translate([-material,middle-material]) square([material,material*2]);
+    }
+    translate([-material,offset]) square([material,material*2]);
+    translate([-material,offset+height-2*material]) square([material,material*2]);
   }
 }

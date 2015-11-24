@@ -29,7 +29,7 @@ buttons_y = 3;
 button_grill_offset = 5;
 button_holdback_diameter = 16;
 button_holdback_outing = 2;
-button_area = [height+button_grill_offset,       20,
+button_area = [height+button_grill_offset, 20,
                width-height-button_grill_offset, height-60];
 buttons = concat(
   vector_flatten([for (y = button_rows()) button_row(y)]),
@@ -73,11 +73,11 @@ module lasercut() {
     p_around();
 
   for (i=[0:len(button_xs)-1]) {
-    translate([i*(inner_depth+wood+gap), 4*(height+gap)])
+    translate([i*(inner_depth+2*wood+gap)+wood, 4*(height+gap)])
       p_switch_plane_v(button_xs[i]);
   }
   for (i=[0:len(button_ys)-1]) {
-    translate([i*(inner_depth+wood+gap), 5*(height+gap)])
+    translate([i*(inner_depth+2*wood+gap)+wood, 5*(height+gap)])
       rotate(90,0) translate([-middle_offset, -inner_depth])
         p_switch_plane_h(button_ys[i]);
   }
@@ -96,7 +96,7 @@ module 3d_body()
   //Back
   color("Violet") translate([0,0,-depth+wood]) linear_extrude(wood)
     p_back_inner();
-  color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
+  *color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
     p_back_cover();
 
   //Around
@@ -136,7 +136,7 @@ module p_front_inner()
               buttons, button_holdback_diameter, button_holdback_outing,
               wood, wood, wood);
 module p_back_inner()
-  back_inner(width, height, wood, wood);
+  back_inner(width, height, buttons, height/2+grill_radius, wood, wood, wood);
 module p_front_cover()
   front_cover(width, height, grill_radius, buttons, button_size);
 module p_back_cover()
