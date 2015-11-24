@@ -145,7 +145,8 @@ module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
-    middle_offset, width-2*middle_offset, inner_depth, wood, button_holdback_diameter, 0);
+    middle_offset, width-2*middle_offset, inner_depth, wood,
+    button_holdback_diameter, wood, button_holdback_outing);
 module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
       wood, height-2*wood, inner_depth, wood,
