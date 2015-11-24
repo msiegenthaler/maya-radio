@@ -1,14 +1,24 @@
 use <wood.scad>
 use <switch.scad>
+use <utils.scad>
 
-module front_inner(width, height, grill_radius, buttons, button_size, material, aroundMaterial)
+module front_inner(width, height, grill_radius, buttons, button_size, button_outings, material, aroundMaterial, innerMaterial)
 {
   module grill() circle(grill_radius);
+  button_xs = vector_uniq(vector_extract(buttons, 0));
   difference() {
     side_inner(width, height, material, aroundMaterial);
     translate([height/2, height/2]) grill();
     translate([width - height/2, height/2]) grill();
-    buttons_holes(buttons, button_size);
+    buttons_holes(buttons, button_size, button_outings, innerMaterial);
+    for (x=button_xs) {
+      translate([x-innerMaterial/2, aroundMaterial])
+        square([innerMaterial, innerMaterial]);
+    }
+    for (x=button_xs) {
+      translate([x-innerMaterial/2, height-innerMaterial*2-aroundMaterial])
+        square([innerMaterial, innerMaterial*2]);
+    }
   }
 }
 
@@ -105,9 +115,15 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
   }
 }
 
-module buttons_holes(buttons, button_size) {
+module buttons_holes(buttons, button_size, outing, outing_material) {
   for (pos = buttons) {
-    translate(pos) circle(d=button_size);
+    translate(pos) union() {
+      circle(d=button_size);
+      *translate([-button_size/2-outing,-outing_material/2])
+        square([outing*2+button_size, outing_material]);
+      translate([-outing_material/2, -button_size/2-outing])
+        square([outing_material, button_size+outing*2]);
+    }
   }
 }
 

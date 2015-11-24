@@ -27,7 +27,8 @@ button_size = 10;
 buttons_x = 4;
 buttons_y = 3;
 button_grill_offset = 5;
-button_holdback_diameter = 19;
+button_holdback_diameter = 16;
+button_holdback_outing = 2;
 button_area = [height+button_grill_offset,       20,
                width-height-button_grill_offset, height-60];
 buttons = concat(
@@ -72,11 +73,11 @@ module lasercut() {
     p_around();
 
   for (i=[0:len(button_xs)-1]) {
-    translate([i*(inner_depth+gap), 4*(height+gap)])
+    translate([i*(inner_depth+wood+gap), 4*(height+gap)])
       p_switch_plane_v(button_xs[i]);
   }
   for (i=[0:len(button_ys)-1]) {
-    translate([i*(inner_depth+gap), 5*(height+gap)])
+    translate([i*(inner_depth+wood+gap), 5*(height+gap)])
       rotate(90,0) translate([-middle_offset, -inner_depth])
         p_switch_plane_h(button_ys[i]);
   }
@@ -131,7 +132,9 @@ module 3d_body()
 
 
 module p_front_inner()
-  front_inner(width, height, grill_radius, buttons, button_holdback_diameter, wood, wood);
+  front_inner(width, height, grill_radius,
+              buttons, button_holdback_diameter, button_holdback_outing,
+              wood, wood, wood);
 module p_back_inner()
   back_inner(width, height, wood, wood);
 module p_front_cover()
@@ -143,6 +146,21 @@ module p_around()
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
     middle_offset, width-2*middle_offset, inner_depth, wood, button_holdback_diameter, 0);
-module p_switch_plane_v(x)
-  switch_plane_vertical(vector_filter(buttons, 0, x),
-    wood, height-2*wood, inner_depth, wood, button_holdback_diameter, 0);
+module p_switch_plane_v(x) {
+  ys = vector_filter(buttons, 0, x);
+  intersection() {
+    switch_plane_vertical(ys,
+        wood, height-2*wood, inner_depth+wood, wood, button_holdback_diameter, wood);
+    union() {
+      for (y=ys) {
+        translate([inner_depth,y[1]-button_holdback_diameter/2-button_holdback_outing])
+          square([wood,button_holdback_outing]);
+        translate([inner_depth,y[1]+button_holdback_diameter/2])
+          square([wood,button_holdback_outing]);
+      }
+      translate([inner_depth,wood]) square([wood, wood]);
+      translate([inner_depth,height-3*wood]) square([wood, wood*2]);
+      square([inner_depth, height]);
+    }
+  }
+}
