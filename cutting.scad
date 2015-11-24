@@ -3,8 +3,6 @@ width = 330;
 grill_radius = 45;
 depth = 60;
 
-cutWidth = .4;
-
 wood = 4;
 
 
@@ -204,8 +202,10 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
   translate([-wrapside-basewidth/2,0]) difference()
   {
     square([length, depth]);
-    translate([offset, 0]) livingHinge(wrapside, depth, materialThickness);
-    translate([offset+basewidth+wrapside, 0]) livingHinge(wrapside, depth, materialThickness);
+    translate([offset, 0])
+      livingHinge(wrapside, depth, materialThickness);
+    translate([offset+basewidth+wrapside, 0])
+      livingHinge(wrapside, depth, materialThickness);
     translate([wrapside+basewidth/2,0])
     //long side joints
     woodjoint(basewidth, false, false, materialThickness, sideMaterialThickness);

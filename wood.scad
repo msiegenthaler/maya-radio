@@ -22,21 +22,23 @@ module livingHinge(width, height, materialThickness)
   count = round(width / materialThickness);
   hingeWidth = width / count;
 
+  cutWidth = .01;
   maxHingeLength = 35;
   connectingLength = materialThickness / 2;
   hingesPerRow = ceil(height / maxHingeLength);
   hingeLength = height / hingesPerRow;
   hingeLongCut = hingeLength - connectingLength;
-  hingeShortCut = hingeLongCut/2;
-
+  hingeShortCut = hingeLongCut / 2;
   for (x = [0:count-1]) {
     translate([x*hingeWidth,0]) for (y = [0:hingesPerRow-1]) {
       translate([0,y*hingeLength]) {
         //line starting with short
         square([cutWidth, hingeShortCut]);
-        translate([0,hingeShortCut+connectingLength]) square([cutWidth, hingeShortCut]);
+        translate([0,hingeShortCut+connectingLength])
+          square([cutWidth, hingeShortCut]);
         //line starting with long
-        translate([hingeWidth/2, connectingLength/2]) square([cutWidth, hingeLongCut]);
+        translate([hingeWidth/2, connectingLength/2])
+          square([cutWidth, hingeLongCut]);
       }
     }
   }
