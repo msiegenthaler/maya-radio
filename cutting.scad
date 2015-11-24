@@ -60,26 +60,24 @@ module lasercut() {
   gap = 2;
 
   translate()
-    front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
+    p_front_inner();
   translate([0, height+gap])
-    back_inner(width, height, wood, wood);
+    p_back_inner();
   translate([0, 2*(height+gap)])
-    front_cover(width, height, grill_radius, buttons, button_size);
+    p_front_cover();
   translate([0, 3*(height+gap)])
-    back_cover(width, height);
+    p_back_cover();
   translate([-gap, around_side_length+basewidth/2]) rotate(90)
-    around(width, height, around_depth, wood, wood);
+    p_around();
 
   for (i=[0:len(button_xs)-1]) {
     translate([i*(inner_depth+gap), 4*(height+gap)])
-      switch_plane_vertical(vector_filter(buttons, 0, button_xs[i]),
-        wood, height-2*wood, inner_depth, wood);
+      p_switch_plane_v(button_xs[i]);
   }
   for (i=[0:len(button_ys)-1]) {
     translate([i*(inner_depth+gap), 5*(height+gap)])
       rotate(90,0) translate([-middle_offset, -inner_depth])
-        switch_plane_horizontal(vector_filter(buttons, 1, button_ys[i]),
-          middle_offset, width-2*middle_offset, inner_depth, wood);
+        p_switch_plane_h(button_ys[i]);
   }
 }
 
@@ -89,47 +87,61 @@ module 3d_body()
 
   //Front
   color("GreenYellow") translate([0,0,-wood*2]) linear_extrude(wood)
-    front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
+    p_front_inner();
   color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
-    front_cover(width, height, grill_radius, buttons, button_size);
+    p_front_cover();
 
   //Back
   color("Violet") translate([0,0,-depth+wood]) linear_extrude(wood)
-    back_inner(width, height, wood, wood);
+    p_back_inner();
   color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
-    back_cover(width, height);
+    p_back_cover();
 
   //Around
   //top around
   translate([height/2, height, -depth+wood]) rotate([90,0]) color("Turquoise")
     linear_extrude(wood) intersection() {
-      around(width, height, around_depth, wood, wood);
+      p_around();
       translate([-add_show_around,0])
         square([basewidth+add_show_around*2, around_depth]);
     }
   //bottom around
   translate([height/2+basewidth/2, wood, -depth+wood]) rotate([90,0]) color("Turquoise")
     linear_extrude(wood) intersection() {
-      translate([around_side_length+basewidth/2,0])
-        around(width, height, around_depth, wood, wood);
+      translate([around_side_length+basewidth/2,0]) p_around();
       square([basewidth/2+add_show_around, around_depth]);
     }
   translate([-add_show_around+height/2, wood, -depth+wood]) rotate([90,0]) color("Turquoise")
     linear_extrude(wood) intersection() {
-      translate([-basewidth-around_side_length+add_show_around,0])
-        around(width, height, around_depth, wood, wood);
+      translate([-basewidth-around_side_length+add_show_around,0]) p_around();
       square([basewidth/2+add_show_around, around_depth]);
     }
 
   //Inner structure
   for (button_x=button_xs) {
     translate([button_x+wood/2,0,-around_depth]) rotate([0,-90,0]) linear_extrude(wood)
-      switch_plane_vertical(vector_filter(buttons, 0, button_x),
-        wood, height-2*wood, inner_depth, wood);
+      p_switch_plane_v(button_x);
   }
   for (button_y=button_ys) {
     translate([0,button_y-wood/2,-wood*2]) rotate([-90,0,0]) linear_extrude(wood)
-      switch_plane_horizontal(vector_filter(buttons, 1, button_y),
-        middle_offset, width-2*middle_offset, inner_depth, wood);
+      p_switch_plane_h(button_y);
   }
 }
+
+
+module p_front_inner()
+  front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
+module p_back_inner()
+  back_inner(width, height, wood, wood);
+module p_front_cover()
+  front_cover(width, height, grill_radius, buttons, button_size);
+module p_back_cover()
+  back_cover(width, height);
+module p_around()
+  around(width, height, around_depth, wood, wood);
+module p_switch_plane_h(y)
+  switch_plane_horizontal(vector_filter(buttons, 1, y),
+    middle_offset, width-2*middle_offset, inner_depth, wood);
+module p_switch_plane_v(x)
+  switch_plane_vertical(vector_filter(buttons, 0, x),
+    wood, height-2*wood, inner_depth, wood);
