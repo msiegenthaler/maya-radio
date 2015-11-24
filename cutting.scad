@@ -18,7 +18,13 @@ depth = 60;
 
 wood = 4;
 
-grill_radius = 45;
+speaker_front=78;
+speaker_back=34;
+speaker_depth=33;
+speaker_back_depth=15;
+speaker_front_depth=speaker_depth-speaker_back_depth;
+
+grill_radius = speaker_front/2 * 1.25;
 grill_resolution = 4;
 grill_offset = 4;
 
@@ -101,9 +107,14 @@ module 3d_body()
     p_back_cover();
 
   // Speakers
-  speaker_depth=33;
-  module speaker()
-    rotate([0,-180,0]) linear_extrude(height=speaker_depth, scale=35/78) circle(d=78);
+  module speaker() {
+    rotate([0,-180,0]) union() {
+      linear_extrude(height=speaker_front_depth, scale=speaker_back/speaker_front)
+        circle(d=speaker_front);
+      translate([0,0,speaker_front_depth])
+        cylinder(d=speaker_back, h=speaker_back_depth);
+    }
+  }
   color("Gray") translate([height/2,height/2,-depth+speaker_depth+2*wood])
     speaker();
   color("Gray") translate([width-height/2,height/2,-depth+speaker_depth+2*wood])
