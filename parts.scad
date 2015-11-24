@@ -55,7 +55,6 @@ module back_inner(width, height, buttons, inner_offset, material, aroundMaterial
       translate([x-innerMaterial/2,height-2*material-aroundMaterial])
         square([material,material*2]);
       col_buttons = vector_filter(buttons, 0, x);
-      echo(col_buttons);
       for (i=[1:len(col_buttons)-1]) {
         middle = (col_buttons[i-1][1]+col_buttons[i][1]) / 2;
         translate([x-material/2,middle-aroundMaterial]) square([material,material*2]);

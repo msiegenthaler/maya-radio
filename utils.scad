@@ -45,3 +45,29 @@ function vector_uniq(vector) =
 // Keeps only values in the matrix that have `value` in the `i`th column (zero based).
 function vector_filter(vector, i, value) =
   vector_flatten([for (v = vector) v[i]==value ? [v] : [] ]);
+
+
+// Bending
+//---------
+module cylindric_bend(dimensions, radius, nsteps = $fn) {
+  //adapter from https://www.thingiverse.com/thing:210099/#files
+  step_angle = nsteps == 0 ? $fa : atan(dimensions.y/(radius * nsteps));
+  steps = nsteps == 0 ? dimensions.y/ (tan(step_angle) * radius) : nsteps;
+  step_width = dimensions.y / steps;
+  {
+    intersection() {
+      children();
+      cube([dimensions.x, step_width/2, dimensions.z]);
+    }
+    for (step = [1:ceil(steps)]) {
+      translate([0, radius * sin(step * step_angle), radius * (1 - cos(step * step_angle))])
+        rotate(step_angle * step, [1, 0, 0])
+          translate([0, -step * step_width, 0])
+            intersection() {
+              children();
+              translate([0, (step - 0.5) * step_width, 0])
+                cube([dimensions.x, step_width, dimensions.z]);
+            }
+    }
+  }
+}

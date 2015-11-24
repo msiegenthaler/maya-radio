@@ -92,12 +92,12 @@ module lasercut() {
 
 module 3d_body()
 {
-  add_show_around = 0.4 * basewidth;
+  add_show_around = 0;
 
   //Front
   color("GreenYellow") translate([0,0,-wood*2]) linear_extrude(wood)
     p_front_inner();
-  color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
+  *color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
     p_front_cover();
 
   //Back
@@ -120,7 +120,6 @@ module 3d_body()
   color("Gray") translate([width-height/2,height/2,-depth+speaker_depth+2*wood])
     speaker();
 
-  //Around
   //top around
   translate([height/2, height, -depth+wood]) rotate([90,0]) color("Turquoise")
     linear_extrude(wood) intersection() {
@@ -139,6 +138,13 @@ module 3d_body()
       translate([-basewidth-around_side_length+add_show_around,0]) p_around();
       square([basewidth/2+add_show_around, around_depth]);
     }
+  //Around sides (round)
+  translate([height/2,0,-wood]) rotate([0,90,90]) color("Turquoise")
+    cylindric_bend([around_depth,height*PI/2,wood], height/2)
+      linear_extrude(wood) square([around_depth, height*PI/2*1.05]);
+  translate([width-height/2,height,-wood]) rotate([0,90,-90]) color("Turquoise")
+    cylindric_bend([around_depth,height*PI/2,wood], height/2)
+      linear_extrude(wood) square([around_depth, height*PI/2*1.05]);
 
   //Inner structure
   for (button_x=button_xs) {
