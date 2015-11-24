@@ -1,5 +1,5 @@
-height = 113;
-width = 310;
+height = 123;
+width = 330;
 grill_radius = 45;
 depth = 60;
 
@@ -11,7 +11,9 @@ wood = 4;
 button_size = 10;
 buttons_x = 4;
 buttons_y = 3;
-button_area = [height+5, 20, width-height-5, height-60];
+button_grill_offset = 5;
+button_area = [height+button_grill_offset,       20,
+               width-height-button_grill_offset, height-60];
 
 buttons = concat(
   vector_flatten([for (y = button_rows()) button_row(y)]),
@@ -28,20 +30,8 @@ function button_row(y) =
   , [y]);
 
 
-//Testing
-// color("red")
- // translate([0, height+10])
- // translate([0,0,-2])
-  // front_cover(width, height, grill_radius, buttons, button_size);
-
-// color("blue")
-  // side_inner(width, height, wood, wood);
-  // front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
-
-
 
 lasercut();
-
 
 //Lasercut for testing stuff
 //switch_lasercut_test();
@@ -72,6 +62,23 @@ module lasercut() {
     back_cover(width, height);
   translate([-gap, around_side_length+basewidth/2]) rotate(90)
     around(width, height, depth, wood, wood);
+
+  grill_offset = 4;
+  middle_offset = height/2+grill_radius;
+  button_xs = vector_uniq(vector_extract(buttons, 0));
+  button_ys = vector_uniq(vector_extract(buttons, 1));
+  inner_depth = depth - 4*wood;
+  for (i=[0:len(button_xs)-1]) {
+    translate([i*(inner_depth+gap), 4*(height+gap)])
+      switch_plane_vertical(vector_filter(buttons, 0, button_xs[i]),
+        wood, height-2*wood, inner_depth);
+  }
+  for (i=[0:len(button_ys)-1]) {
+    translate([i*(inner_depth+gap), 5*(height+gap)])
+      rotate(90,0) translate([-middle_offset, -inner_depth])
+        switch_plane_horizontal(vector_filter(buttons, 1, button_ys[i]),
+          middle_offset, width-2*middle_offset, inner_depth);
+  }
 }
 
 module 3d_body()
@@ -221,5 +228,23 @@ module around(width, height, depth, materialThickness, sideMaterialThickness)
 module buttons_holes(buttons, button_size) {
   for (pos = buttons) {
     translate(pos) circle(d=button_size);
+  }
+}
+
+module switch_plane_horizontal(buttons, offset, width, depth)
+{
+  difference() {
+    translate([offset,0]) square([width, depth]);
+    for (b=buttons)
+      translate([b[0],0]) switch_holder(false, depth, wood);
+  }
+}
+
+module switch_plane_vertical(buttons, offset, height, depth)
+{
+  translate([depth,0]) rotate(90,0) difference() {
+    translate([offset,0]) square([height, depth]);
+    for (b=buttons)
+      translate([b[1],0]) switch_holder(false, depth, wood);
   }
 }

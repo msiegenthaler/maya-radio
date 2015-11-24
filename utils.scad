@@ -41,3 +41,7 @@ function vector_uniq(vector) =
       vector_contains(uniq_tail, head) ?
         uniq_tail :
         concat([head], uniq_tail);
+
+// Keeps only values in the matrix that have `value` in the `i`th column (zero based).
+function vector_filter(vector, i, value) =
+  vector_flatten([for (v = vector) v[i]==value ? [v] : [] ]);

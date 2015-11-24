@@ -1,7 +1,7 @@
 // Holder for a push button switch. Cross pair with mode=true and mode=false.
 //  7x7 no-lock switch: http://www.dx.com/p/7-x-7mm-no-lock-switch-blue-white-black-20-piece-pack-120311
 module switch_holder(mode, height, wood) {
-  holdback_diameter = 20;
+  holdback_diameter = 18;
   holdback_thickness = 4;
   switch_travel = 2;
   switch_neck_width = 4;
