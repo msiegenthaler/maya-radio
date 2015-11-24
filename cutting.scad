@@ -19,6 +19,7 @@ depth = 60;
 wood = 4;
 
 grill_radius = 45;
+grill_resolution = 4;
 grill_offset = 4;
 
 // Buttons
@@ -138,7 +139,7 @@ module p_front_inner()
 module p_back_inner()
   back_inner(width, height, buttons, height/2+grill_radius, wood, wood, wood);
 module p_front_cover()
-  front_cover(width, height, grill_radius, buttons, button_size);
+  front_cover(width, height, grill_radius, grill_resolution, buttons, button_size);
 module p_back_cover()
   back_cover(width, height);
 module p_around()

@@ -28,9 +28,9 @@ module front_inner(width, height, grill_radius, buttons, button_size, button_out
   }
 }
 
-module front_cover(width, height, grill_radius, buttons, button_size)
+module front_cover(width, height, grill_radius, grill_res, buttons, button_size)
 {
-  module grill() speakerGrill(grill_radius, .75, 4);
+  module grill() speakerGrill(grill_radius, grill_res/4, grill_res);
   difference() {
     side_cover(width, height);
     translate([height/2, height/2]) grill();
