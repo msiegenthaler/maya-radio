@@ -27,6 +27,7 @@ button_size = 10;
 buttons_x = 4;
 buttons_y = 3;
 button_grill_offset = 5;
+button_holdback_diameter = 19;
 button_area = [height+button_grill_offset,       20,
                width-height-button_grill_offset, height-60];
 buttons = concat(
@@ -88,7 +89,7 @@ module 3d_body()
   //Front
   color("GreenYellow") translate([0,0,-wood*2]) linear_extrude(wood)
     p_front_inner();
-  color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
+  *color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
     p_front_cover();
 
   //Back
@@ -130,7 +131,7 @@ module 3d_body()
 
 
 module p_front_inner()
-  front_inner(width, height, grill_radius, buttons, button_size, wood, wood);
+  front_inner(width, height, grill_radius, buttons, button_holdback_diameter, wood, wood);
 module p_back_inner()
   back_inner(width, height, wood, wood);
 module p_front_cover()
@@ -141,7 +142,7 @@ module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
-    middle_offset, width-2*middle_offset, inner_depth, wood);
+    middle_offset, width-2*middle_offset, inner_depth, wood, button_holdback_diameter, 0);
 module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
-    wood, height-2*wood, inner_depth, wood);
+    wood, height-2*wood, inner_depth, wood, button_holdback_diameter, 0);

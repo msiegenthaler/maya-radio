@@ -1,8 +1,6 @@
 // Holder for a push button switch. Cross pair with mode=true and mode=false.
 //  7x7 no-lock switch: http://www.dx.com/p/7-x-7mm-no-lock-switch-blue-white-black-20-piece-pack-120311
-module switch_holder(mode, height, wood) {
-  holdback_diameter = 18;
-  holdback_thickness = 4;
+module switch_holder(mode, height, wood, holdback_diameter = 20, holdback_inset = 4) {
   switch_travel = 2;
   switch_neck_width = 4;
   switch_neck_height = 5;
@@ -12,16 +10,16 @@ module switch_holder(mode, height, wood) {
   pin_width = 1;
   pin_offset = 0.5;
   switch_height = switch_neck_height + switch_body_width;
-  cutout_height = height - switch_height - holdback_thickness;
+  cutout_height = height - switch_height - holdback_inset;
 
   module cutout1() {
     union() {
-      square([holdback_diameter, holdback_thickness + switch_travel]);
-      translate([(holdback_diameter - switch_neck_width)/2, holdback_thickness + switch_travel])
+      square([holdback_diameter, holdback_inset + switch_travel]);
+      translate([(holdback_diameter - switch_neck_width)/2, holdback_inset + switch_travel])
         square([switch_neck_width, switch_neck_height - switch_travel]);
-      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_neck_height])
+      translate([(holdback_diameter - switch_body_width)/2, holdback_inset + switch_neck_height])
         square([switch_body_width, switch_body_height]);
-      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_height]) {
+      translate([(holdback_diameter - switch_body_width)/2, holdback_inset + switch_height]) {
         translate([pin_offset,0])
           square([pin_width, pin_length]);
         translate([switch_body_width - pin_offset - pin_width,0])
@@ -33,10 +31,10 @@ module switch_holder(mode, height, wood) {
   }
   module cutout2() {
     union() {
-      square([holdback_diameter, holdback_thickness+switch_travel]);
-      translate([(holdback_diameter - switch_body_width)/2, holdback_thickness + switch_travel])
+      square([holdback_diameter, holdback_inset+switch_travel]);
+      translate([(holdback_diameter - switch_body_width)/2, holdback_inset + switch_travel])
         square([switch_body_width,switch_body_height + switch_neck_height - switch_travel]);
-      translate([(holdback_diameter - wood)/2, switch_height + holdback_thickness])
+      translate([(holdback_diameter - wood)/2, switch_height + holdback_inset])
         square([wood,cutout_height/2]);
     }
   }
