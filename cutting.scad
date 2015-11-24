@@ -91,14 +91,23 @@ module 3d_body()
   //Front
   color("GreenYellow") translate([0,0,-wood*2]) linear_extrude(wood)
     p_front_inner();
-  *color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
+  color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
     p_front_cover();
 
   //Back
   color("Violet") translate([0,0,-depth+wood]) linear_extrude(wood)
     p_back_inner();
-  *color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
+  color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
     p_back_cover();
+
+  // Speakers
+  speaker_depth=33;
+  module speaker()
+    rotate([0,-180,0]) linear_extrude(height=speaker_depth, scale=35/78) circle(d=78);
+  color("Gray") translate([height/2,height/2,-depth+speaker_depth+2*wood])
+    speaker();
+  color("Gray") translate([width-height/2,height/2,-depth+speaker_depth+2*wood])
+    speaker();
 
   //Around
   //top around
