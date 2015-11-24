@@ -146,21 +146,7 @@ module p_around()
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
     middle_offset, width-2*middle_offset, inner_depth, wood, button_holdback_diameter, 0);
-module p_switch_plane_v(x) {
-  ys = vector_filter(buttons, 0, x);
-  intersection() {
-    switch_plane_vertical(ys,
-        wood, height-2*wood, inner_depth+wood, wood, button_holdback_diameter, wood);
-    union() {
-      for (y=ys) {
-        translate([inner_depth,y[1]-button_holdback_diameter/2-button_holdback_outing])
-          square([wood,button_holdback_outing]);
-        translate([inner_depth,y[1]+button_holdback_diameter/2])
-          square([wood,button_holdback_outing]);
-      }
-      translate([inner_depth,wood]) square([wood, wood]);
-      translate([inner_depth,height-3*wood]) square([wood, wood*2]);
-      square([inner_depth, height]);
-    }
-  }
-}
+module p_switch_plane_v(x)
+  switch_plane_vertical(vector_filter(buttons, 0, x),
+      wood, height-2*wood, inner_depth, wood,
+      button_holdback_diameter, wood, button_holdback_outing);

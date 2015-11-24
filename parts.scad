@@ -136,11 +136,21 @@ module switch_plane_horizontal(buttons, offset, width, depth, material, holdback
   }
 }
 
-module switch_plane_vertical(buttons, offset, height, depth, material, holdback_diameter, holdback_inset)
+module switch_plane_vertical(buttons, offset, height, depth, material, holdback_diameter, holdback_inset, holdback_outing)
 {
-  translate([depth,0]) rotate(90,0) difference() {
-    translate([offset,0]) square([height, depth]);
-    for (b=buttons)
-      translate([b[1],0]) switch_holder(true, depth, material, holdback_diameter, holdback_inset);
+  union() {
+    translate([depth,0]) rotate(90,0) difference() {
+      translate([offset,0]) square([height, depth]);
+      for (b=buttons)
+        translate([b[1],0]) switch_holder(true, depth, material, holdback_diameter, holdback_inset);
+    }
+    for (b=buttons) {
+      translate([depth,b[1]-holdback_diameter/2-holdback_outing])
+        square([material,holdback_outing]);
+      translate([depth,b[1]+holdback_diameter/2])
+        square([material,holdback_outing]);
+    }
+    translate([depth,material]) square([material, material]);
+    translate([depth,height-3*material]) square([material, material*2]);
   }
 }
