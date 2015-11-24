@@ -12,9 +12,9 @@
 
 // Parameters
 //------------
-height = 123;
+height = 128; //min: ardiuno+battery+6*wood=104+6*4=128
 width = 330;
-depth = 60;
+depth = 70;
 
 wood = 4;
 
@@ -155,6 +155,22 @@ module 3d_body()
     translate([0,button_y-wood/2,-wood*2]) rotate([-90,0,0]) linear_extrude(wood)
       p_switch_plane_h(button_y);
   }
+
+  //Battery
+  module battery() {
+    color("SteelBlue") cube([70, 50, 20]);
+  }
+  translate([width/2-35, wood*3, -depth+2*wood]) battery();
+
+  //Arduino
+  module arduino() {
+    color("LightSkyBlue") union() {
+      cube([70, 54, 18]);
+      translate([0,0,18]) cube([8, 21, 9-1]);
+      translate([0,54-33,18]) cube([25, 33, 6-1]);
+    }
+  }
+  translate([width/2-35, height-54-wood*3, -depth+2*wood]) arduino();
 }
 
 
