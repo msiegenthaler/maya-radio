@@ -219,8 +219,9 @@ module speaker_setback(width, height, grill_radius, middle_offset, material) {
   }
 }
 
-module speaker_holder(width, height, speaker_radius, middle_offset, material) {
+module speaker_holder(width, height, speaker_radius, screw_offset, middle_offset, material) {
   border = material;
+  screw = 3.2;
   intersection() {
     union() {
       circle(height/2-material);
@@ -231,6 +232,10 @@ module speaker_holder(width, height, speaker_radius, middle_offset, material) {
       translate([-height/2,-height/2+border])
         square([middle_offset,height-2*border]);
       circle(speaker_radius);
+      translate([screw_offset,  screw_offset]) circle(d=screw);
+      translate([screw_offset, -screw_offset]) circle(d=screw);
+      translate([-screw_offset, screw_offset]) circle(d=screw);
+      translate([-screw_offset,-screw_offset]) circle(d=screw);
     }
   }
 }

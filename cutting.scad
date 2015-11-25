@@ -19,8 +19,7 @@ depth = 66;
 wood = 4;
 
 speaker_front=76.5;
-speaker_front_plate_s=72;
-speaker_front_plate_o=96;
+speaker_screw_offset = 86/2/sqrt(2);
 
 grill_radius = 50;
 grill_resolution = 4;
@@ -197,22 +196,24 @@ module p_switch_plane_v(x)
       wood, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
 module p_speaker_holder_l()
-  speaker_holder(width, height, speaker_front/2, middle_offset, wood);
+  speaker_holder(width, height, speaker_front/2, speaker_screw_offset, middle_offset, wood);
 module p_speaker_holder_r() rotate([0,0,180])
-    speaker_holder(width, height, speaker_front/2, middle_offset, wood);
+    speaker_holder(width, height, speaker_front/2, speaker_screw_offset, middle_offset, wood);
 module p_speaker_setback_l()
   speaker_setback(width, height, grill_radius, middle_offset, wood);
 module p_speaker_setback_r() rotate([0,0,180])
     speaker_setback(width, height, grill_radius, middle_offset, wood);
 
 module speaker() {
-  speaker_screw = 4.7;
-  speaker_screw_offset = 86/2/sqrt(2);
-  speaker_front_plate_thickness = 0.2;
   speaker_back=34;
   speaker_depth=33;
   speaker_back_depth=15;
   speaker_front_depth=speaker_depth-speaker_back_depth;
+  speaker_front_plate_s=72;
+  speaker_front_plate_o=96;
+  speaker_front_plate_thickness = 0.2;
+  speaker_screw = 4.7;
+
   rotate([0,-180,0]) union() {
     linear_extrude(height=speaker_front_depth, scale=speaker_back/speaker_front)
       circle(d=speaker_front);
