@@ -1,5 +1,5 @@
-lasercut();
-// 3d_body();
+//lasercut();
+3d_body();
 
 //Lasercuts for testing stuff
 //switch_lasercut_test();
@@ -28,6 +28,8 @@ led_count = 5;  //per side
 grill_radius = 50;
 grill_resolution = 4;
 grill_offset = 4;
+
+backpocket_height = 30; //TODO
 
 // Buttons
 use <utils.scad>
@@ -98,6 +100,8 @@ module lasercut() {
     p_speaker_setback_l();
   translate([width+gap+middle_offset/2,height/2+3*(height+gap)])
     p_speaker_setback_r();
+
+  //TODO middle plane
 }
 
 module 3d_body()
@@ -149,14 +153,19 @@ module 3d_body()
       linear_extrude(wood) square([around_depth, height*PI/2*1.05]);
 
   //Inner structure
-  for (button_x=button_xs) {
+  color("Tan") for (button_x=button_xs) {
     translate([button_x+wood/2,0,-around_depth]) rotate([0,-90,0]) linear_extrude(wood)
       p_switch_plane_v(button_x);
   }
-  for (button_y=button_ys) {
+  color("Tan") for (button_y=button_ys) {
     translate([0,button_y-wood/2,-wood*2]) rotate([-90,0,0]) linear_extrude(wood)
       p_switch_plane_h(button_y);
   }
+
+  //Backpocket
+  color("Wheat") translate([middle_offset, 0, -depth+backpocket_height+wood])
+    // translate([0,0,-50])
+    linear_extrude(wood) p_middle_pane();
 
   translate([width/2-35, wood*3, -depth+2*wood]) battery();
   translate([middle_offset+2*wood, height-54-wood*3, -depth+2*wood]) arduino();
@@ -189,12 +198,14 @@ module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
-    middle_offset, width-2*middle_offset, inner_depth, wood,
+    middle_offset, backpocket_height, width-2*middle_offset, inner_depth, wood,
     button_holdback_diameter, wood, button_holdback_outing);
 module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
-      wood, height-2*wood, inner_depth, wood,
+      wood, backpocket_height, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
+module p_middle_pane()
+  middle_pane(width, height, buttons, height/2+grill_radius, wood, wood, wood);
 module p_speaker_holder_l()
   speaker_holder(width, height, speaker_front/2, speaker_screw_offset, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_speaker_holder_r() rotate([0,0,180])

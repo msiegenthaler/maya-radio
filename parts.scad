@@ -46,8 +46,10 @@ module back_inner(width, height, buttons, inner_offset, material, aroundMaterial
   difference() {
     side_inner(width, height, material, aroundMaterial);
     // horizontal inner tabs
-    for (y = button_ys) translate([inner_offset,y-innerMaterial/2])
-        woodclick(width-inner_offset*2, innerMaterial);
+    translate([inner_offset+innerMaterial,aroundMaterial])
+      rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
+    translate([width-inner_offset,aroundMaterial])
+      rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
     // vertical inner tabs
     for (x = button_xs) {
       translate([x-innerMaterial/2,aroundMaterial])
@@ -55,10 +57,6 @@ module back_inner(width, height, buttons, inner_offset, material, aroundMaterial
       translate([x-innerMaterial/2,height-2*material-aroundMaterial])
         square([material,material*2]);
       col_buttons = vector_filter(buttons, 0, x);
-      for (i=[1:len(col_buttons)-1]) {
-        middle = (col_buttons[i-1][1]+col_buttons[i][1]) / 2;
-        translate([x-material/2,middle-aroundMaterial]) square([material,material*2]);
-      }
     }
   }
 }
@@ -152,13 +150,14 @@ module buttons_holes(buttons, button_size, outing, outing_material) {
   }
 }
 
-module switch_plane_horizontal(buttons, offset, width, depth, material, holdback_diameter, holdback_inset, holdback_outing)
+module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth, material, holdback_diameter, holdback_inset, holdback_outing)
 {
+  top_depth = depth - backpocket_height;
   union() {
     difference() {
-      translate([offset,0]) square([width, depth]);
+      translate([offset,0]) square([width, top_depth]);
       for (b=buttons)
-        translate([b[0],0]) switch_holder(false, depth, material, holdback_diameter, holdback_inset);
+        translate([b[0],0]) switch_holder(false, top_depth, material, holdback_diameter, holdback_inset);
     }
     // outings at buttons
     for (b=buttons) {
@@ -171,15 +170,16 @@ module switch_plane_horizontal(buttons, offset, width, depth, material, holdback
     translate([offset,-material]) square([material, material]);
     translate([width+offset-material,-material]) square([material, material]);
     //back tabs
-    translate([offset, depth]) woodclick(width, material);
+    #translate([offset, top_depth]) woodclick(width, material);
   }
 }
 
-module switch_plane_vertical(buttons, offset, height, depth, material, holdback_diameter, holdback_inset, holdback_outing)
+module switch_plane_vertical(buttons, offset, backpocket_height, height, depth, material, holdback_diameter, holdback_inset, holdback_outing)
 {
+  top_depth = depth - backpocket_height;
   union() {
     translate([depth,0]) rotate(90,0) difference() {
-      translate([offset,0]) square([height, depth]);
+      translate([offset,0]) square([height, top_depth]);
       for (b=buttons)
         translate([b[1],0]) switch_holder(true, depth+material, material, holdback_diameter, holdback_inset);
     }
@@ -196,12 +196,40 @@ module switch_plane_vertical(buttons, offset, height, depth, material, holdback_
     //back tabs
     for (i=[1:len(buttons)-1]) {
       middle = (buttons[i-1][1]+buttons[i][1]) / 2;
-      translate([-material,middle-material]) square([material,material*2]);
+      translate([backpocket_height-material,middle-material]) square([material,material*2]);
     }
-    translate([-material,offset]) square([material,material*2]);
-    translate([-material,offset+height-2*material]) square([material,material*2]);
+    translate([-material,offset])
+      square([backpocket_height+material,material*2]);
+    translate([-material,offset+height-2*material])
+      square([backpocket_height+material,material*2]);
   }
 }
+
+module middle_pane(width, height, buttons, inner_offset, material, aroundMaterial, innerMaterial)
+{
+  button_xs = vector_uniq(vector_extract(buttons, 0));
+  button_ys = vector_uniq(vector_extract(buttons, 1));
+  translate([-inner_offset, 0]) difference() {
+    translate([inner_offset, aroundMaterial])
+      square([width-2*inner_offset, height-2*aroundMaterial]);
+    // horizontal inner tabs
+    for (y = button_ys) translate([inner_offset,y-innerMaterial/2])
+        woodclick(width-inner_offset*2, innerMaterial);
+    // vertical inner tabs
+    for (x = button_xs) {
+      translate([x-innerMaterial/2,aroundMaterial])
+        square([material,material*2]);
+      translate([x-innerMaterial/2,height-2*material-aroundMaterial])
+        square([material,material*2]);
+      col_buttons = vector_filter(buttons, 0, x);
+      for (i=[1:len(col_buttons)-1]) {
+        middle = (col_buttons[i-1][1]+col_buttons[i][1]) / 2;
+        translate([x-material/2,middle-aroundMaterial]) square([material,material*2]);
+      }
+    }
+  }
+}
+
 
 module speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, material) {
   border = material;
