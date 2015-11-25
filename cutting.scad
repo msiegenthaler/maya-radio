@@ -148,20 +148,7 @@ module 3d_body()
       p_switch_plane_h(button_y);
   }
 
-  //Battery
-  module battery() {
-    color("SteelBlue") cube([70, 50, 20]);
-  }
   translate([width/2-35, wood*3, -depth+2*wood]) battery();
-
-  //Arduino
-  module arduino() {
-    color("LightSkyBlue") union() {
-      cube([70, 54, 18]);
-      translate([0,0,18]) cube([8, 21, 9-1]);
-      translate([0,54-33,18]) cube([25, 33, 6-1]);
-    }
-  }
   translate([middle_offset+2*wood, height-54-wood*3, -depth+2*wood]) arduino();
 
   color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
@@ -204,6 +191,8 @@ module p_speaker_setback_l()
 module p_speaker_setback_r() rotate([0,0,180])
     speaker_setback(width, height, grill_radius, middle_offset, wood);
 
+
+//Other parts (for fitting)
 module speaker() {
   speaker_back=34;
   speaker_depth=33;
@@ -235,5 +224,15 @@ module speaker() {
         translate([-speaker_screw_offset, speaker_screw_offset]) circle(d=speaker_screw);
         translate([-speaker_screw_offset,-speaker_screw_offset]) circle(d=speaker_screw);
       }
+  }
+}
+module battery() {
+  color("SteelBlue") cube([70, 50, 20]);
+}
+module arduino() {
+  color("LightSkyBlue") union() {
+    cube([70, 54, 18]);
+    translate([0,0,18]) cube([8, 21, 9-1]);
+    translate([0,54-33,18]) cube([25, 33, 6-1]);
   }
 }
