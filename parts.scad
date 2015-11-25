@@ -220,9 +220,11 @@ module speaker_setback(width, height, grill_radius, led_count, led_radius, middl
       for (i=[0:led_count]) {
           a = (360/led_count*i + led_angle_offset) % 360;
           translate([sin(a)*led_offset, cos(a)*led_offset])
-            rotate([0,0,270-a]) union() {
+            rotate([0,0,225-a])
+            union() {
               circle(led_radius);
-              translate([0,-led_radius]) square([grill_radius/2,led_radius*2]);
+              translate([-led_radius/1.4,-led_radius/1.4])
+                square([grill_radius, grill_radius]);
             }
       }
     }
