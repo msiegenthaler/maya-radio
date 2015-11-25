@@ -18,13 +18,11 @@ depth = 66;
 
 wood = 4;
 
-speaker_front=78;
-speaker_back=34;
-speaker_depth=33;
-speaker_back_depth=15;
-speaker_front_depth=speaker_depth-speaker_back_depth;
+speaker_front=76.5;
+speaker_front_plate_s=72;
+speaker_front_plate_o=96;
 
-grill_radius = speaker_front/2 * 1.25;
+grill_radius = 50;
 grill_resolution = 4;
 grill_offset = 4;
 
@@ -110,17 +108,9 @@ module 3d_body()
     p_back_cover();
 
   // Speakers
-  module speaker() {
-    rotate([0,-180,0]) union() {
-      linear_extrude(height=speaker_front_depth, scale=speaker_back/speaker_front)
-        circle(d=speaker_front);
-      translate([0,0,speaker_front_depth])
-        cylinder(d=speaker_back, h=speaker_back_depth);
-    }
-  }
-  color("Gray") translate([height/2,height/2,-4*wood])
+  color("Gray") translate([height/2,height/2,-3*wood])
     speaker();
-  color("Gray") translate([width-height/2,height/2,-4*wood])
+  color("Gray") translate([width-height/2,height/2,-3*wood])
     speaker();
 
   //top around
@@ -207,10 +197,42 @@ module p_switch_plane_v(x)
       wood, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
 module p_speaker_holder_l()
-  speaker_holder(width, height, grill_radius, middle_offset, wood);
+  speaker_holder(width, height, speaker_front/2, middle_offset, wood);
 module p_speaker_holder_r() rotate([0,0,180])
-    speaker_holder(width, height, grill_radius, middle_offset, wood);
+    speaker_holder(width, height, speaker_front/2, middle_offset, wood);
 module p_speaker_setback_l()
   speaker_setback(width, height, grill_radius, middle_offset, wood);
 module p_speaker_setback_r() rotate([0,0,180])
     speaker_setback(width, height, grill_radius, middle_offset, wood);
+
+module speaker() {
+  speaker_screw = 4.7;
+  speaker_screw_offset = 86/2/sqrt(2);
+  speaker_front_plate_thickness = 0.2;
+  speaker_back=34;
+  speaker_depth=33;
+  speaker_back_depth=15;
+  speaker_front_depth=speaker_depth-speaker_back_depth;
+  rotate([0,-180,0]) union() {
+    linear_extrude(height=speaker_front_depth, scale=speaker_back/speaker_front)
+      circle(d=speaker_front);
+    translate([0,0,speaker_front_depth])
+      cylinder(d=speaker_back, h=speaker_back_depth);
+    translate([0,0,-speaker_front_plate_thickness])
+      linear_extrude(speaker_front_plate_thickness)
+      difference() {
+        intersection() {
+          union() {
+            translate([-speaker_front_plate_s/2, -speaker_front_plate_s/2])
+              square([speaker_front_plate_s, speaker_front_plate_s]);
+            circle(d=speaker_front+3);
+          }
+          circle(d=speaker_front_plate_o);
+        }
+        translate([speaker_screw_offset,  speaker_screw_offset]) circle(d=speaker_screw);
+        translate([speaker_screw_offset, -speaker_screw_offset]) circle(d=speaker_screw);
+        translate([-speaker_screw_offset, speaker_screw_offset]) circle(d=speaker_screw);
+        translate([-speaker_screw_offset,-speaker_screw_offset]) circle(d=speaker_screw);
+      }
+  }
+}
