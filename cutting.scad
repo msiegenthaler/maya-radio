@@ -1,5 +1,5 @@
-// lasercut();
-3d_body();
+lasercut();
+// 3d_body();
 
 //Lasercuts for testing stuff
 //switch_lasercut_test();
@@ -90,8 +90,14 @@ module lasercut() {
         p_switch_plane_h(button_ys[i]);
   }
 
-  //TODO speaker setback l+r
-  //TODO speaker holder l+r
+  translate([width+gap+middle_offset/2,height/2]) rotate([0,0,180])
+    p_speaker_holder_l();
+  translate([width+gap+middle_offset/2,height/2+height+gap])
+    p_speaker_holder_r();
+  translate([width+gap+middle_offset/2,height/2+2*(height+gap)]) rotate([0,0,180])
+    p_speaker_setback_l();
+  translate([width+gap+middle_offset/2,height/2+3*(height+gap)])
+    p_speaker_setback_r();
 }
 
 module 3d_body()
