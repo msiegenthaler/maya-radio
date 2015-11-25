@@ -18,8 +18,12 @@ depth = 66;
 
 wood = 4;
 
-speaker_front=76.5;
+speaker_front = 76.5;
 speaker_screw_offset = 86/2/sqrt(2);
+
+led_length = 9;
+led_radius = 3;
+led_count = 5;  //per side
 
 grill_radius = 50;
 grill_resolution = 4;
@@ -160,6 +164,9 @@ module 3d_body()
     p_speaker_holder_l();
   color("PaleGreen") translate([width-height/2,height/2, -wood*4]) linear_extrude(wood)
     p_speaker_holder_r();
+
+  translate([height/2,height/2]) leds(true);
+  translate([width-height/2,height/2]) leds(false);
 }
 
 module p_front_inner()
@@ -183,13 +190,13 @@ module p_switch_plane_v(x)
       wood, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
 module p_speaker_holder_l()
-  speaker_holder(width, height, speaker_front/2, speaker_screw_offset, middle_offset, wood);
+  speaker_holder(width, height, speaker_front/2, speaker_screw_offset, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_speaker_holder_r() rotate([0,0,180])
-    speaker_holder(width, height, speaker_front/2, speaker_screw_offset, middle_offset, wood);
+    speaker_holder(width, height, speaker_front/2, speaker_screw_offset, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_speaker_setback_l()
-  speaker_setback(width, height, grill_radius, middle_offset, wood);
+  speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_speaker_setback_r() rotate([0,0,180])
-    speaker_setback(width, height, grill_radius, middle_offset, wood);
+    speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, wood);
 
 
 //Other parts (for fitting)
@@ -234,5 +241,16 @@ module arduino() {
     cube([70, 54, 18]);
     translate([0,0,18]) cube([8, 21, 9-1]);
     translate([0,54-33,18]) cube([25, 33, 6-1]);
+  }
+}
+module led() {
+  color("FireBrick") cylinder(led_length, r=led_radius);
+}
+module leds(alignRight) {
+  led_offset = grill_radius+led_radius;
+  led_angle_offset = (alignRight?90:270) - (360/led_count/2);
+  union() for (i=[0:led_count]) {
+    a = (360/led_count*i + led_angle_offset) % 360;
+    translate([sin(a)*led_offset, cos(a)*led_offset, -wood*2-led_length]) led();
   }
 }

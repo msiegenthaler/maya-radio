@@ -203,8 +203,10 @@ module switch_plane_vertical(buttons, offset, height, depth, material, holdback_
   }
 }
 
-module speaker_setback(width, height, grill_radius, middle_offset, material) {
+module speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, material) {
   border = material;
+  led_offset = grill_radius+led_radius;
+  led_angle_offset = 90 - (360/led_count/2);
   intersection() {
     union() {
       circle(height/2-material);
@@ -215,13 +217,23 @@ module speaker_setback(width, height, grill_radius, middle_offset, material) {
       translate([-height/2,-height/2+border])
         square([middle_offset,height-2*border]);
       circle(grill_radius);
+      for (i=[0:led_count]) {
+          a = (360/led_count*i + led_angle_offset) % 360;
+          translate([sin(a)*led_offset, cos(a)*led_offset])
+            rotate([0,0,270-a]) union() {
+              circle(led_radius);
+              translate([0,-led_radius]) square([grill_radius/2,led_radius*2]);
+            }
+      }
     }
   }
 }
 
-module speaker_holder(width, height, speaker_radius, screw_offset, middle_offset, material) {
+module speaker_holder(width, height, speaker_radius, screw_offset, grill_radius, led_count, led_radius, middle_offset, material) {
   border = material;
   screw = 3.2;
+  led_offset = grill_radius+led_radius;
+  led_angle_offset = 90 - (360/led_count/2);
   intersection() {
     union() {
       circle(height/2-material);
@@ -236,6 +248,10 @@ module speaker_holder(width, height, speaker_radius, screw_offset, middle_offset
       translate([screw_offset, -screw_offset]) circle(d=screw);
       translate([-screw_offset, screw_offset]) circle(d=screw);
       translate([-screw_offset,-screw_offset]) circle(d=screw);
+      for (i=[0:led_count]) {
+          a = (360/led_count*i + led_angle_offset) % 360;
+          translate([sin(a)*led_offset, cos(a)*led_offset]) circle(led_radius);
+      }
     }
   }
 }
