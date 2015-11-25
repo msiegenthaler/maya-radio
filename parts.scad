@@ -202,3 +202,40 @@ module switch_plane_vertical(buttons, offset, height, depth, material, holdback_
     translate([-material,offset+height-2*material]) square([material,material*2]);
   }
 }
+
+module speaker_setback(width, height, grill_radius, middle_offset, material) {
+  border = material;
+  intersection() {
+    union() {
+      circle(height/2-material);
+      translate([0,-height/2+border])
+        square([middle_offset-height/2,height-2*border]);
+    }
+    difference() {
+      translate([-height/2,-height/2+border])
+        square([middle_offset,height-2*border]);
+      circle(grill_radius);
+    }
+  }
+}
+
+module holder_latch(radius, length) {
+  circle(radius);
+  translate([-radius,0]) square([radius*2, length-radius]);
+}
+
+module speaker_holder(width, height, grill_radius, middle_offset, material) {
+  latch_length = 10;
+  latch_offset = (grill_radius-latch_length/2)/sqrt(2);
+  union() {
+    speaker_setback(width, height, grill_radius, middle_offset, material);
+    translate([-latch_offset,latch_offset,0])rotate([0,0,45])
+      holder_latch(5, latch_length);
+    translate([latch_offset,latch_offset,0])rotate([0,0,-45])
+      holder_latch(5, latch_length);
+    translate([-latch_offset,-latch_offset,0])rotate([0,0,135])
+      holder_latch(5, latch_length);
+    translate([latch_offset,-latch_offset,0])rotate([0,0,-135])
+      holder_latch(5, latch_length);
+  }
+}

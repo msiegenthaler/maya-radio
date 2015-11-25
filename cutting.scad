@@ -14,7 +14,7 @@
 //------------
 height = 128; //min: ardiuno+battery+6*wood=104+6*4=128
 width = 330;
-depth = 70;
+depth = 66;
 
 wood = 4;
 
@@ -88,6 +88,9 @@ module lasercut() {
       rotate(90,0) translate([-middle_offset, -inner_depth])
         p_switch_plane_h(button_ys[i]);
   }
+
+  //TODO speaker setback l+r
+  //TODO speaker holder l+r
 }
 
 module 3d_body()
@@ -115,9 +118,9 @@ module 3d_body()
         cylinder(d=speaker_back, h=speaker_back_depth);
     }
   }
-  color("Gray") translate([height/2,height/2,-depth+speaker_depth+2*wood])
+  color("Gray") translate([height/2,height/2,-4*wood])
     speaker();
-  color("Gray") translate([width-height/2,height/2,-depth+speaker_depth+2*wood])
+  color("Gray") translate([width-height/2,height/2,-4*wood])
     speaker();
 
   //top around
@@ -170,9 +173,18 @@ module 3d_body()
       translate([0,54-33,18]) cube([25, 33, 6-1]);
     }
   }
-  translate([width/2-35, height-54-wood*3, -depth+2*wood]) arduino();
-}
+  translate([middle_offset+2*wood, height-54-wood*3, -depth+2*wood]) arduino();
 
+  color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
+    p_speaker_setback_l();
+  color("LightGreen") translate([width-height/2,height/2, -wood*3]) linear_extrude(wood)
+    p_speaker_setback_r();
+
+  color("PaleGreen") translate([height/2,height/2, -wood*4]) linear_extrude(wood)
+    p_speaker_holder_l();
+  color("PaleGreen") translate([width-height/2,height/2, -wood*4]) linear_extrude(wood)
+    p_speaker_holder_r();
+}
 
 module p_front_inner()
   front_inner(width, height, grill_radius,
@@ -194,3 +206,11 @@ module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
       wood, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
+module p_speaker_holder_l()
+  speaker_holder(width, height, grill_radius, middle_offset, wood);
+module p_speaker_holder_r() rotate([0,0,180])
+    speaker_holder(width, height, grill_radius, middle_offset, wood);
+module p_speaker_setback_l()
+  speaker_setback(width, height, grill_radius, middle_offset, wood);
+module p_speaker_setback_r() rotate([0,0,180])
+    speaker_setback(width, height, grill_radius, middle_offset, wood);
