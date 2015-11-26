@@ -321,8 +321,13 @@ module p_sidewall_l() {
       square([ear_upper, arduino_width-holdback_l-holdback_r]);
   }
 }
-module p_sidewall_r()
-  sidewall(height, depth, backpocket_height, buttons, wood);
+module p_sidewall_r() {
+  difference() {
+    sidewall(height, depth, backpocket_height, buttons, wood);
+    //cable canal
+    translate([depth-backpocket_height+wood-3, (height-2*wood)*.88]) circle(2);
+  }
+}
 module p_battery_board_case(i) {
   w = 20; h = 20; tw=50;
   battery_board_case(battery_board_width+w, battery_board_height+h) {
