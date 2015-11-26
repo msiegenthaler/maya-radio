@@ -29,7 +29,9 @@ grill_radius = 50;
 grill_resolution = 4;
 grill_offset = 4;
 
-backpocket_height = 30; //TODO
+arduino_height = 18 + 5;
+ardiuno_speaker_terminal = 8;
+backpocket_height = arduino_height;
 
 // Buttons
 use <utils.scad>
@@ -163,12 +165,13 @@ module 3d_body()
   }
 
   //Backpocket
-  color("Wheat") translate([middle_offset, 0, -depth+backpocket_height+wood])
-    // translate([0,0,-50])
+  color("Wheat") translate([middle_offset, 0, -depth+backpocket_height+2*wood])
     linear_extrude(wood) p_middle_pane();
 
-  translate([width/2-35, wood*3, -depth+2*wood]) battery();
-  translate([middle_offset+2*wood, height-54-wood*3, -depth+2*wood]) arduino();
+  translate([width/2-35, wood*3, -depth+2*wood])
+    battery();
+  translate([width-2*middle_offset+3*wood-ardiuno_speaker_terminal, height-54-wood*3, -depth+2*wood])
+    arduino();
 
   color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
     p_speaker_setback_l();
@@ -198,11 +201,11 @@ module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
-    middle_offset, backpocket_height, width-2*middle_offset, inner_depth, wood,
+    middle_offset, backpocket_height+wood, width-2*middle_offset, inner_depth, wood,
     button_holdback_diameter, wood, button_holdback_outing);
 module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
-      wood, backpocket_height, height-2*wood, inner_depth, wood,
+      wood, backpocket_height+wood, height-2*wood, inner_depth, wood,
       button_holdback_diameter, wood, button_holdback_outing);
 module p_middle_pane()
   middle_pane(width, height, buttons, height/2+grill_radius, wood, wood, wood);
@@ -254,10 +257,11 @@ module battery() {
   color("SteelBlue") cube([70, 50, 20]);
 }
 module arduino() {
+  base_offset = 5;
   color("LightSkyBlue") union() {
-    cube([70, 54, 18]);
-    translate([0,0,18]) cube([8, 21, 9-1]);
-    translate([0,54-33,18]) cube([25, 33, 6-1]);
+    cube([103, 54, arduino_height - base_offset]);
+    translate([0,0,18]) cube([ardiuno_speaker_terminal, 21, 9-1]);
+    translate([0,54-33,18]) cube([25, 33, base_offset]);
   }
 }
 module led() {
