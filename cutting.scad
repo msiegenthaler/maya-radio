@@ -270,6 +270,10 @@ module p_back_inner() {
     back_inner(width, height, cutout_overlap, buttons, height/2+grill_radius, wood, wood, wood);
     translate([width-middle_offset+wood, (height-battery_board_width_low)/2])
       square([battery_board_height, battery_board_width_low]);
+    translate([width-middle_offset+woods_for_battery_board*wood,height/2]) {
+      translate([wood,-20]) square([wood,wood*2]);
+      translate([wood,20-2*wood]) square([wood,wood*2]);
+    }
   }
 }
 module p_front_cover()
@@ -329,7 +333,10 @@ module p_battery_board_case(i) {
     translate([-tw/2,h+battery_board_height])
       square([50,depth-h-battery_board_height-6*wood]);
   }
-  //TODO add tab to outermost to fixate
+  if (i==woods_for_battery_board) {
+    translate([-20,-wood]) square([2*wood,wood]);
+    translate([20-2*wood,-wood]) square([2*wood,wood]);
+  }
 }
 
 
