@@ -1,4 +1,4 @@
-//lasercut();
+// lasercut();
 3d_body();
 
 //Lasercuts for testing stuff
@@ -215,6 +215,17 @@ module 3d_body()
 
   translate([height/2,height/2]) leds(true);
   translate([width-height/2,height/2]) leds(false);
+
+  //Buttons
+  for (b=buttons) {
+    color("OrangeRed") translate(b) {
+      linear_extrude(wood) circle(d=button_size);
+      translate([0,0,-wood])
+        linear_extrude(wood) circle(d=button_size);
+      translate([0,0,-2*wood])
+        linear_extrude(wood) circle(d=button_holdback_diameter);
+    }
+  }
 }
 
 
