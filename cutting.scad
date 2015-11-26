@@ -129,6 +129,13 @@ module lasercut() {
     translate([-2*gap-button_size-button_holdback_diameter/2,i*(button_holdback_diameter+gap)])
       circle(d=button_holdback_diameter);
   }
+
+  col3 = col2 + middle_offset + wood + gap;
+
+  translate([col3, 0])
+    p_back_screwholder();
+  translate([col3, height+gap])
+    p_back_screwholder2();
 }
 
 module 3d_body()
@@ -146,6 +153,10 @@ module 3d_body()
     p_back_inner();
   color("Fuchsia") translate([0,0,-depth]) linear_extrude(wood)
     p_back_cover();
+  color("MediumVioletRed") translate([0,0,-depth+2*wood]) linear_extrude(wood)
+    p_back_screwholder();
+  color("DarkMagenta") translate([0,0,-depth+3*wood]) linear_extrude(wood)
+    p_back_screwholder2();
 
   // Speakers
   color("Gray") translate([height/2,height/2,-3*wood])
@@ -239,6 +250,10 @@ module p_front_cover()
   front_cover(width, height, grill_radius, grill_resolution, buttons, button_size);
 module p_back_cover()
   back_cover(width, height, cutout_overlap, middle_offset, wood);
+module p_back_screwholder()
+  back_screwholder(width, height, cutout_overlap, middle_offset, wood);
+module p_back_screwholder2()
+  back_screwholder2(width, height, cutout_overlap, middle_offset, wood);
 module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)

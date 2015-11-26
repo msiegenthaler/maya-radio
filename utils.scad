@@ -71,3 +71,10 @@ module cylindric_bend(dimensions, radius, nsteps = $fn) {
     }
   }
 }
+
+// Forms
+//-------
+module hexagon(size) {
+  boxWidth = size/1.75;
+  for (r = [-60, 0, 60]) rotate([0,0,r]) square([boxWidth, size], true);
+}

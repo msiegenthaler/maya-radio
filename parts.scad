@@ -46,7 +46,7 @@ module back_inner(width, height, cutout_overlap, buttons, inner_offset, material
   difference() {
     side_inner(width, height, material, aroundMaterial);
     //Cutout for access from outside
-    back_cutout(false, cutout_overlap, width, height, inner_offset, innerMaterial);
+    back_cutout(2, cutout_overlap, width, height, inner_offset, innerMaterial);
     // horizontal inner tabs
     translate([inner_offset,aroundMaterial])
       rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
@@ -67,51 +67,98 @@ module back_cover(width, height, cutout_overlap, inner_offset, material)
 {
   difference() {
     side_cover(width, height);
-    back_cutout(true, cutout_overlap, width, height, inner_offset, material);
+    back_cutout(1, cutout_overlap, width, height, inner_offset, material);
   }
 }
 
-module back_cutout(mode, inset, width, height, middle_offset, material) {
-  screw = 3.2;
+module back_screwholder(width, height, cutout_overlap, inner_offset, material)
+{
+  back_cutout(3, cutout_overlap, width, height, inner_offset, material);
+}
+
+module back_screwholder2(width, height, cutout_overlap, inner_offset, material)
+{
+  back_cutout(4, cutout_overlap, width, height, inner_offset, material);
+}
+
+module back_cutout(layer, inset, width, height, middle_offset, material) {
+  screw = 3.1;
+  screw_s = 5.5 - 0.3; //to make it thight
+  screw_head = 6.1;
+  holder = 12;
+  holders_holder = 30;
   leftover = material*2;
   module basic_form() {
-    union() {
-      translate([height/2,height/2])
-        circle(height/2-leftover);
-      translate([height/2,height/2])
-        square([height/2,height/2-leftover]);
+    intersection() {
+      union() {
+        translate([height/2,height/2])
+          circle(height/2-leftover);
+        translate([height/2,height/2])
+          square([height,height/2-leftover]);
+      }
+      basic_form_full();
     }
   }
-  module screws() {
+  module basic_form_full() {
+    intersection() {
+      union() {
+        translate([height/2,height/2])
+          circle(height/2);
+        translate([height/2,height/2])
+          square([height,height/2]);
+      }
+      square([middle_offset-material,height]);
+    }
+  }
+  module screw_positions() {
     b = middle_offset-height/2-material-screw*3;
     d = height/2 - leftover - inset/2;
     a = acos(b/d)+90;
     translate([height/2,height/2]) {
-      translate([-d, 0])
-        circle(d=screw);
-      translate([b, d])
-        circle(d=screw);
-      translate([sin(a)*d, cos(a)*d])
-        circle(d=screw);
+      translate([-d, 0]) children();
+      translate([b, d]) children();
+      translate([sin(a)*d, cos(a)*d]) children();
     }
   }
+  module screws() screw_positions() circle(d=screw);
   module border() square([middle_offset-material, height]);
 
-  if (mode) {
+  if (layer == 1) {
     difference() {
       intersection() {
         basic_form();
         border();
       }
-      screws();
+      screw_positions() circle(d=screw_head);
     }
-  } else {
-    union() {
-      intersection() {
-        offset(-inset) basic_form();
-        border();
+  } else if (layer == 2) {
+    difference() {
+      union() {
+        intersection() {
+          offset(-inset) basic_form();
+          border();
+        }
+        screw_positions() circle(d=holder);
       }
       screws();
+    }
+  } else if (layer == 3) {
+    intersection() {
+      difference() {
+        basic_form_full();
+        offset(-inset) basic_form();
+        screws();
+      }
+      screw_positions() circle(d=holders_holder);
+    }
+  } else if (layer == 4) {
+    intersection() {
+      difference() {
+        basic_form_full();
+        offset(-inset) basic_form();
+        screw_positions() hexagon(screw_s);
+      }
+      screw_positions() circle(d=holders_holder);
     }
   }
 }
