@@ -102,21 +102,33 @@ module lasercut() {
         p_switch_plane_h(button_ys[i]);
   }
 
-  translate([width+gap+middle_offset/2,height/2]) rotate([0,0,180])
+  col2 = max(
+             len(button_xs)*(inner_depth+2*wood+gap) + button_size + button_holdback_diameter + 2*gap,
+             len(button_ys)*(inner_depth+2*wood+gap) + button_size + button_holdback_diameter + 2*gap,
+             width+gap);
+
+  translate([col2+middle_offset/2,height/2]) rotate([0,0,180])
     p_speaker_holder_l();
-  translate([width+gap+middle_offset/2,height/2+height+gap])
+  translate([col2+middle_offset/2,height/2+height+gap])
     p_speaker_holder_r();
-  translate([width+gap+middle_offset/2,height/2+2*(height+gap)]) rotate([0,0,180])
+  translate([col2+middle_offset/2,height/2+2*(height+gap)]) rotate([0,0,180])
     p_speaker_setback_l();
-  translate([width+gap+middle_offset/2,height/2+3*(height+gap)])
+  translate([col2+middle_offset/2,height/2+3*(height+gap)])
     p_speaker_setback_r();
 
-  translate([width+gap+2*wood, 4*(height+gap)])
+  translate([col2+2*wood, 4*(height+gap)])
     p_middle_pane();
-  translate([width+gap+2*wood, 5*(height+gap)])
+  translate([col2+2*wood, 5*(height+gap)])
     p_sidewall_r();
-  translate([width+gap+2*wood+inner_depth+gap, 5*(height+gap)])
+  translate([col2+2*wood+inner_depth+gap, 5*(height+gap)])
     p_sidewall_l();
+
+  translate([col2, 4*(height+gap)+button_holdback_diameter/2]) for (i=[0:len(buttons)-1]) {
+    translate([-button_size/2,i*(button_size+gap)])
+      circle(d=button_size);
+    translate([-2*gap-button_size-button_holdback_diameter/2,i*(button_holdback_diameter+gap)])
+      circle(d=button_holdback_diameter);
+  }
 }
 
 module 3d_body()
