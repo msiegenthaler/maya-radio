@@ -33,6 +33,8 @@ arduino_height = 28;
 arduino_width = 54;
 arduino_length = 103;
 battery_width = 50;
+battery_height = 20;
+battery_board_width = 58;
 backpocket_height = arduino_height;
 if (width-2*middle_offset < arduino_length)
   echo("WARNING: Arduino does not fit (in length)");
@@ -158,12 +160,6 @@ module 3d_body()
   color("DarkMagenta") translate([0,0,-depth+3*wood]) linear_extrude(wood)
     p_back_screwholder2();
 
-  // Speakers
-  color("Gray") translate([height/2,height/2,-3*wood])
-    speaker();
-  color("Gray") translate([width-height/2,height/2,-3*wood])
-    speaker();
-
   //top around
   translate([height/2, height, -depth+wood]) rotate([90,0]) color("Turquoise")
     linear_extrude(wood) intersection() {
@@ -208,22 +204,28 @@ module 3d_body()
   color("RosyBrown") translate([middle_offset-wood,wood,-4*wood]) rotate([0,90,0])
    linear_extrude(wood) p_sidewall_l();
 
-  translate([width/2-35, wood*3, -depth+2*wood])
+  //Electronics
+  translate([width/2-35, wood*3, -depth+backpocket_height+2*wood-battery_height])
     battery();
+  translate([width/2+battery_board_width/2, wood*3, -depth+wood]) rotate([0,180,0])
+    battery_board();
   translate([width-middle_offset-arduino_length, height-54-wood*3, -depth+2*wood])
     translate([0,arduino_width,arduino_height]) rotate([180,0,0])
       arduino();
 
+  // Speakers and speaker holder
   color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
     p_speaker_setback_l();
   color("LightGreen") translate([width-height/2,height/2, -wood*3]) linear_extrude(wood)
     p_speaker_setback_r();
-
   color("PaleGreen") translate([height/2,height/2, -wood*4]) linear_extrude(wood)
     p_speaker_holder_l();
   color("PaleGreen") translate([width-height/2,height/2, -wood*4]) linear_extrude(wood)
     p_speaker_holder_r();
-
+  color("Gray") translate([height/2,height/2,-3*wood])
+    speaker();
+  color("Gray") translate([width-height/2,height/2,-3*wood])
+    speaker();
   translate([height/2,height/2]) leds(true);
   translate([width-height/2,height/2]) leds(false);
 
@@ -323,13 +325,24 @@ module speaker() {
   }
 }
 module battery() {
-  color("SteelBlue") cube([70, battery_width, 20]);
+  color("SteelBlue") cube([70, battery_width, battery_height]);
+}
+module battery_board() {
+  h = 11; uw = 9; protude = 2;
+  color("LightSteelBlue") translate([0,0,-h]) union() {
+    linear_extrude(h) battery_board_base();
+    translate([(battery_board_width-uw)/2,-protude,0])
+      cube([uw,protude,4]);
+  }
+}
+module battery_board_base() {
+  square([battery_board_width, 21]);
 }
 module arduino() {
   base_offset_1 = 5;
   base_offset_2 = 8;
   base_height = arduino_height - base_offset_2;
-  color("LightSkyBlue") union() {
+  color("DeepSkyBlue") union() {
     cube([arduino_length, arduino_width, base_height]);
     translate([0,0,base_height]) cube([8, 21, base_offset_2]);
     translate([0,54-33,base_height]) cube([25, 33, base_offset_1]);
