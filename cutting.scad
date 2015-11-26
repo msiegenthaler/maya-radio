@@ -215,7 +215,7 @@ module p_back_inner()
 module p_front_cover()
   front_cover(width, height, grill_radius, grill_resolution, buttons, button_size);
 module p_back_cover()
-  back_cover(width, height, middle_offset, wood);
+  back_cover(width, height, cutout_overlap, middle_offset, wood);
 module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)

@@ -46,7 +46,7 @@ module back_inner(width, height, cutout_overlap, buttons, inner_offset, material
   difference() {
     side_inner(width, height, material, aroundMaterial);
     //Cutout for access from outside
-    back_cutout(cutout_overlap, width, height, inner_offset, innerMaterial);
+    back_cutout(false, cutout_overlap, width, height, inner_offset, innerMaterial);
     // horizontal inner tabs
     translate([inner_offset,aroundMaterial])
       rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
@@ -63,27 +63,58 @@ module back_inner(width, height, cutout_overlap, buttons, inner_offset, material
   }
 }
 
-module back_cover(width, height, inner_offset, material)
+module back_cover(width, height, cutout_overlap, inner_offset, material)
 {
   difference() {
     side_cover(width, height);
-    back_cutout(0, width, height, inner_offset, material);
+    back_cutout(true, cutout_overlap, width, height, inner_offset, material);
   }
 }
 
-module back_cutout(inset, width, height, middle_offset, material) {
-  leftover = 10;
-  intersection() {
-    offset(-inset) union() {
+module back_cutout(mode, inset, width, height, middle_offset, material) {
+  screw = 3.2;
+  leftover = material*2;
+  module basic_form() {
+    union() {
       translate([height/2,height/2])
         circle(height/2-leftover);
       translate([height/2,height/2])
         square([height/2,height/2-leftover]);
     }
-    square([middle_offset-material, height]);
+  }
+  module screws() {
+    b = middle_offset-height/2-material-screw*3;
+    d = height/2 - leftover - inset/2;
+    a = acos(b/d)+90;
+    translate([height/2,height/2]) {
+      translate([-d, 0])
+        circle(d=screw);
+      translate([b, d])
+        circle(d=screw);
+      translate([sin(a)*d, cos(a)*d])
+        circle(d=screw);
+    }
+  }
+  module border() square([middle_offset-material, height]);
+
+  if (mode) {
+    difference() {
+      intersection() {
+        basic_form();
+        border();
+      }
+      screws();
+    }
+  } else {
+    union() {
+      intersection() {
+        offset(-inset) basic_form();
+        border();
+      }
+      screws();
+    }
   }
 }
-
 
 module side_inner(width, height, material, aroundMaterial)
 {
