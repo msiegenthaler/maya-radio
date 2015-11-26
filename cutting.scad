@@ -330,7 +330,7 @@ module p_sidewall_r() {
     //cable canals
     echo(battery_board_height);
     translate([depth-backpocket_height+wood-3, (height-2*wood)*.88]) circle(2);
-    translate([depth-5*wood-battery_board_depth+1.5, (height-2*wood)*.4]) circle(1.5);
+    translate([depth-5*wood-battery_board_depth+2, (height-2*wood)*.4]) circle(2);
   }
 }
 module p_battery_board_case(i) {

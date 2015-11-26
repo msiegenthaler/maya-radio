@@ -248,6 +248,7 @@ module buttons_holes(buttons, button_size, outing, outing_material) {
 
 module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth, material, holdback_diameter, holdback_inset, holdback_outing)
 {
+  canal = 2;
   top_depth = depth - backpocket_height;
   union() {
     difference() {
@@ -258,10 +259,10 @@ module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth,
       xs = vector_sort(vector_extract(buttons, 0));
       for (i=[1:len(xs)-1]) {
         middle = (xs[i-1] + xs[i]) / 2;
-        translate([middle, top_depth-5]) circle(1.5);
+        translate([middle, top_depth-5]) circle(canal);
       }
-      translate([(offset+buttons[0][0])/2, top_depth-5]) circle(1.5);
-      translate([(offset+width+buttons[len(buttons)-1][0])/2, top_depth-5]) circle(1.5);
+      translate([(offset+buttons[0][0])/2, top_depth-5]) circle(canal);
+      translate([(offset+width+buttons[len(buttons)-1][0])/2, top_depth-5]) circle(canal);
     }
     // outings at buttons
     for (b=buttons) {
@@ -333,12 +334,13 @@ module middle_pane(width, height, buttons, inner_offset, material, aroundMateria
         middle_pane_hclick(height, col_buttons, innerMaterial, aroundMaterial);
     }
     //cable canals
+    canal = 3;
     for (i = [1:len(button_xs)-1]) {
       middle = (button_xs[i-1] + button_xs[i]) / 2;
-      translate([middle, (height-2*aroundMaterial)*0.75]) circle(2);
+      translate([middle, (height-2*aroundMaterial)*0.75]) circle(canal);
     }
-    translate([(inner_offset+button_xs[0])/2, (height-2*aroundMaterial)*0.75]) circle(2);
-    translate([(width-inner_offset+button_xs[len(button_xs)-1])/2, (height-2*aroundMaterial)*0.75]) circle(2);
+    translate([(inner_offset+button_xs[0])/2, (height-2*aroundMaterial)*0.75]) circle(canal);
+    translate([(width-inner_offset+button_xs[len(button_xs)-1])/2, (height-2*aroundMaterial)*0.75]) circle(canal);
   }
 }
 
