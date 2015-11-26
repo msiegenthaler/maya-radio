@@ -12,8 +12,8 @@
 
 // Parameters
 //------------
-height = 128; //min: ardiuno+battery+6*wood=104+6*4=128
-width = 330;
+height = 128; //min: backpocket should fit battery+arduino (Warning will be echo'd)
+width = 331;  //min: backpocket should fit the arduino (Warning will be echo'd)
 depth = 66;
 
 wood = 4;
@@ -29,9 +29,16 @@ grill_radius = 50;
 grill_resolution = 4;
 grill_offset = 4;
 
-arduino_height = 18 + 5;
-ardiuno_speaker_terminal = 8;
+arduino_height = 28;
+arduino_width = 54;
+arduino_length = 103;
+battery_width = 50;
 backpocket_height = arduino_height;
+if (width-2*middle_offset < arduino_length)
+  echo("WARNING: Arduino does not fit (in length)");
+if (height < arduino_width+battery_width+6*wood)
+  echo("WARNING: Arduino and battery do not fit (in width)");
+
 
 // Buttons
 use <utils.scad>
@@ -172,12 +179,13 @@ module 3d_body()
   color("RosyBrown") translate([width-middle_offset,wood,-4*wood]) rotate([0,90,0])
    linear_extrude(wood) p_sidewall_r();
   color("RosyBrown") translate([middle_offset-wood,wood,-4*wood]) rotate([0,90,0])
-   linear_extrude(wood) p_sidewall_r();
+   linear_extrude(wood) p_sidewall_l();
 
   translate([width/2-35, wood*3, -depth+2*wood])
     battery();
-  translate([width-2*middle_offset+3*wood-ardiuno_speaker_terminal, height-54-wood*3, -depth+2*wood])
-    arduino();
+  translate([width-middle_offset-arduino_length, height-54-wood*3, -depth+2*wood])
+    translate([0,arduino_width,arduino_height]) rotate([180,0,0])
+      arduino();
 
   color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
     p_speaker_setback_l();
@@ -225,7 +233,13 @@ module p_speaker_setback_l()
 module p_speaker_setback_r() rotate([0,0,180])
     speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_sidewall_l() {
-  sidewall(height, depth, backpocket_height, buttons, wood);
+  holdback_l = 2;
+  holdback_r = 6;
+  difference() {
+    sidewall(height, depth, backpocket_height, buttons, wood);
+    translate([depth-6*wood-backpocket_height,height-4*wood-arduino_width+holdback_r])
+      square([backpocket_height,arduino_width-holdback_l-holdback_r]);
+  }
 }
 module p_sidewall_r()
   sidewall(height, depth, backpocket_height, buttons, wood);
@@ -266,14 +280,16 @@ module speaker() {
   }
 }
 module battery() {
-  color("SteelBlue") cube([70, 50, 20]);
+  color("SteelBlue") cube([70, battery_width, 20]);
 }
 module arduino() {
-  base_offset = 5;
+  base_offset_1 = 5;
+  base_offset_2 = 8;
+  base_height = arduino_height - base_offset_2;
   color("LightSkyBlue") union() {
-    cube([103, 54, arduino_height - base_offset]);
-    translate([0,0,18]) cube([ardiuno_speaker_terminal, 21, 9-1]);
-    translate([0,54-33,18]) cube([25, 33, base_offset]);
+    cube([arduino_length, arduino_width, base_height]);
+    translate([0,0,base_height]) cube([8, 21, base_offset_2]);
+    translate([0,54-33,base_height]) cube([25, 33, base_offset_1]);
   }
 }
 module led() {
