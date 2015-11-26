@@ -110,9 +110,12 @@ module lasercut() {
   translate([width+gap+middle_offset/2,height/2+3*(height+gap)])
     p_speaker_setback_r();
 
-  //TODO middle plane
-  //TODO sidewall_l
-  //TODO sidewall_r
+  translate([width+gap+2*wood, 4*(height+gap)])
+    p_middle_pane();
+  translate([width+gap+2*wood, 5*(height+gap)])
+    p_sidewall_r();
+  translate([width+gap+2*wood+inner_depth+gap, 5*(height+gap)])
+    p_sidewall_l();
 }
 
 module 3d_body()
