@@ -104,6 +104,8 @@ module lasercut() {
     p_speaker_setback_r();
 
   //TODO middle plane
+  //TODO sidewall_l
+  //TODO sidewall_r
 }
 
 module 3d_body()
@@ -167,6 +169,10 @@ module 3d_body()
   //Backpocket
   color("Wheat") translate([middle_offset, 0, -depth+backpocket_height+2*wood])
     linear_extrude(wood) p_middle_pane();
+  color("RosyBrown") translate([width-middle_offset,wood,-4*wood]) rotate([0,90,0])
+   linear_extrude(wood) p_sidewall_r();
+  color("RosyBrown") translate([middle_offset-wood,wood,-4*wood]) rotate([0,90,0])
+   linear_extrude(wood) p_sidewall_r();
 
   translate([width/2-35, wood*3, -depth+2*wood])
     battery();
@@ -186,6 +192,7 @@ module 3d_body()
   translate([height/2,height/2]) leds(true);
   translate([width-height/2,height/2]) leds(false);
 }
+
 
 module p_front_inner()
   front_inner(width, height, grill_radius,
@@ -217,6 +224,11 @@ module p_speaker_setback_l()
   speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, wood);
 module p_speaker_setback_r() rotate([0,0,180])
     speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, wood);
+module p_sidewall_l() {
+  sidewall(height, depth, backpocket_height, buttons, wood);
+}
+module p_sidewall_r()
+  sidewall(height, depth, backpocket_height, buttons, wood);
 
 
 //Other parts (for fitting)

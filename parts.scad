@@ -46,9 +46,9 @@ module back_inner(width, height, buttons, inner_offset, material, aroundMaterial
   difference() {
     side_inner(width, height, material, aroundMaterial);
     // horizontal inner tabs
-    translate([inner_offset+innerMaterial,aroundMaterial])
+    translate([inner_offset,aroundMaterial])
       rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
-    translate([width-inner_offset,aroundMaterial])
+    translate([width-inner_offset+innerMaterial,aroundMaterial])
       rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
     // vertical inner tabs
     for (x = button_xs) {
@@ -170,7 +170,7 @@ module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth,
     translate([offset,-material]) square([material, material]);
     translate([width+offset-material,-material]) square([material, material]);
     //back tabs
-    #translate([offset, top_depth]) woodclick(width, material);
+    translate([offset, top_depth]) woodclick(width, material);
   }
 }
 
@@ -210,26 +210,59 @@ module middle_pane(width, height, buttons, inner_offset, material, aroundMateria
   button_xs = vector_uniq(vector_extract(buttons, 0));
   button_ys = vector_uniq(vector_extract(buttons, 1));
   translate([-inner_offset, 0]) difference() {
-    translate([inner_offset, aroundMaterial])
-      square([width-2*inner_offset, height-2*aroundMaterial]);
+    translate([inner_offset, 0]) union() {
+      translate([0, aroundMaterial])
+        square([width-2*inner_offset, height-2*aroundMaterial]);
+      translate([-innerMaterial,0])
+        middle_pane_hclick(height, button_ys, innerMaterial, aroundMaterial);
+      translate([width-2*inner_offset,0])
+        middle_pane_hclick(height, button_ys, innerMaterial, aroundMaterial);
+    }
     // horizontal inner tabs
     for (y = button_ys) translate([inner_offset,y-innerMaterial/2])
         woodclick(width-inner_offset*2, innerMaterial);
     // vertical inner tabs
+    button_xs = vector_uniq(vector_extract(buttons, 0));
     for (x = button_xs) {
-      translate([x-innerMaterial/2,aroundMaterial])
-        square([material,material*2]);
-      translate([x-innerMaterial/2,height-2*material-aroundMaterial])
-        square([material,material*2]);
-      col_buttons = vector_filter(buttons, 0, x);
-      for (i=[1:len(col_buttons)-1]) {
-        middle = (col_buttons[i-1][1]+col_buttons[i][1]) / 2;
-        translate([x-material/2,middle-aroundMaterial]) square([material,material*2]);
-      }
+      col_buttons = vector_extract(vector_filter(buttons, 0, x), 1);
+      translate([x-innerMaterial/2,0])
+        middle_pane_hclick(height, col_buttons, innerMaterial, aroundMaterial);
     }
   }
 }
 
+module middle_pane_hclick(height, button_ys, innerMaterial, aroundMaterial) {
+  translate([0,aroundMaterial])
+    square([innerMaterial,innerMaterial*2]);
+  translate([0/2,aroundMaterial])
+    square([innerMaterial,innerMaterial*2]);
+  translate([0,height-2*innerMaterial-aroundMaterial])
+    square([innerMaterial,innerMaterial*2]);
+  for (i=[1:len(button_ys)-1]) {
+    middle = (button_ys[i-1]+button_ys[i]) / 2;
+    translate([0,middle-aroundMaterial])
+      square([innerMaterial,innerMaterial*2]);
+  }
+}
+
+module sidewall(height, depth, backpocket_height, buttons, material) {
+  d = depth-6*material;
+  h = height-2*material;
+  button_ys = vector_uniq(vector_extract(buttons, 1));
+  difference() {
+    union() {
+      square([d, h]);
+      //front/back tabs
+      rotate([0,0,90])
+        woodclick(h, material);
+      translate([d+material,0]) rotate([0,0,90])
+        woodclick(h, material);
+    }
+    //middle pane tabs
+    translate([d-backpocket_height-material, -material])
+      middle_pane_hclick(height, button_ys, material, material);
+  }
+}
 
 module speaker_setback(width, height, grill_radius, led_count, led_radius, middle_offset, material) {
   border = material;
@@ -282,6 +315,8 @@ module speaker_holder(width, height, speaker_radius, screw_offset, grill_radius,
           a = (360/led_count*i + led_angle_offset) % 360;
           translate([sin(a)*led_offset, cos(a)*led_offset]) circle(led_radius);
       }
+      translate([middle_offset-height/2,-height/2+material]) rotate([0,0,90])
+        woodclick(height-2*material, material);
     }
   }
 }
