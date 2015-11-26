@@ -34,15 +34,19 @@ arduino_width = 54;
 arduino_length = 103;
 battery_width = 50;
 battery_height = 20;
-battery_board_width = 58;
-battery_board_height = 11;
-battery_board_usb_height = 4;
-usb_width = 12; usb_height = 9;
 backpocket_height = arduino_height;
 if (width-2*middle_offset < arduino_length)
   echo("WARNING: Arduino does not fit (in length)");
 if (height < arduino_width+battery_width+6*wood)
   echo("WARNING: Arduino and battery do not fit (in width)");
+
+battery_board_width = 58;
+battery_board_width_low = 49; //where it meets the bottom
+battery_board_height = 11;
+battery_board_usb_height = 4;
+battery_board_usb_offset = 1;
+usb_width = 12; usb_height = 9;
+woods_for_battery_board = ceil(battery_board_height/wood);
 
 cutout_overlap = 15;
 
@@ -141,6 +145,11 @@ module lasercut() {
     p_back_screwholder();
   translate([col3, height+gap])
     p_back_screwholder2();
+
+  for (i=[0:woods_for_battery_board]) {
+    translate([col3+battery_board_width/2+20, 2*(height+gap)+i*(depth-5*wood)])
+      p_battery_board_case(i);
+  }
 }
 
 module 3d_body()
@@ -210,11 +219,18 @@ module 3d_body()
   //Electronics
   translate([width/2-35, wood*3, -depth+backpocket_height+2*wood-battery_height])
     battery();
-  translate([width-middle_offset+wood, (height-battery_board_width)/2, -depth+wood]) rotate([90,0,90])
-    battery_board();
   translate([width-middle_offset-arduino_length, height-54-wood*3, -depth+2*wood])
     translate([0,arduino_width,arduino_height]) rotate([180,0,0])
       arduino();
+
+  //Battery Board
+  for (i=[0:woods_for_battery_board]) {
+    translate([width-middle_offset+i*wood+wood, height/2, -depth+2*wood])
+      rotate([90,0,90]) linear_extrude(wood)
+        p_battery_board_case(i);
+  }
+  translate([width-middle_offset+wood, height/2, -depth+wood]) rotate([90,0,90])
+    battery_board();
 
   // Speakers and speaker holder
   color("LightGreen") translate([height/2,height/2, -wood*3]) linear_extrude(wood)
@@ -252,8 +268,8 @@ module p_front_inner()
 module p_back_inner() {
   difference() {
     back_inner(width, height, cutout_overlap, buttons, height/2+grill_radius, wood, wood, wood);
-    translate([width-middle_offset+wood, (height-battery_board_width)/2])
-      square([battery_board_height, battery_board_width]);
+    translate([width-middle_offset+wood, (height-battery_board_width_low)/2])
+      square([battery_board_height, battery_board_width_low]);
   }
 }
 module p_front_cover()
@@ -261,7 +277,9 @@ module p_front_cover()
 module p_back_cover() {
   difference() {
     back_cover(width, height, cutout_overlap, middle_offset, wood);
-    translate([width-middle_offset+wood-(usb_height-battery_board_usb_height)/2, (height-usb_width)/2])
+    translate([
+      width-middle_offset+wood+battery_board_usb_offset+battery_board_usb_height/2-usb_height/2, //-(usb_height-battery_board_usb_height)/2,
+      (height-usb_width)/2])
       square([usb_height, usb_width]);
   }
 }
@@ -301,6 +319,18 @@ module p_sidewall_l() {
 }
 module p_sidewall_r()
   sidewall(height, depth, backpocket_height, buttons, wood);
+module p_battery_board_case(i) {
+  w = 20; h = 20; tw=50;
+  battery_board_case(battery_board_width+w, battery_board_height+h) {
+    if (i<woods_for_battery_board)
+      translate([0,-wood]) battery_board_base();
+  }
+  if (middle_offset+wood-i*wood >= height/2+grill_radius) {
+    translate([-tw/2,h+battery_board_height])
+      square([50,depth-h-battery_board_height-6*wood]);
+  }
+  //TODO add tab to outermost to fixate
+}
 
 
 //Other parts (for fitting)
@@ -344,12 +374,19 @@ module battery_board() {
   uw = 9; protude = 2;
   color("LightSteelBlue") union() {
     linear_extrude(battery_board_height) battery_board_base();
-    translate([(battery_board_width-uw)/2,-protude,0])
+    translate([-uw/2,-protude,battery_board_usb_offset])
       cube([uw,protude,battery_board_usb_height]);
   }
 }
 module battery_board_base() {
-  square([battery_board_width, 21]);
+  h = 21;
+  module half()
+    polygon([[0,0], [0,12],[4,16],[8,h],[23,h],
+      [battery_board_width/2,h],[battery_board_width/2,0]]);
+  translate([-battery_board_width/2,h]) mirror([0,1]) union() {
+    half();
+    translate([battery_board_width,0]) mirror([1,0]) half();
+  }
 }
 module arduino() {
   base_offset_1 = 5;

@@ -416,3 +416,10 @@ module speaker_holder(width, height, speaker_radius, screw_offset, grill_radius,
     }
   }
 }
+
+module battery_board_case(width, height) {
+  difference() {
+    translate([-width/2,0]) square([width, height]);
+    children();
+  }
+}
