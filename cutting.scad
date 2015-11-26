@@ -125,7 +125,7 @@ module 3d_body()
   //Front
   color("GreenYellow") translate([0,0,-wood*2]) linear_extrude(wood)
     p_front_inner();
-  *color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
+  color("SpringGreen") translate([0,0,-wood]) linear_extrude(wood)
     p_front_cover();
 
   //Back
