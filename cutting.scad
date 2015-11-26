@@ -320,6 +320,8 @@ module p_sidewall_l() {
     sidewall(height, depth, backpocket_height, buttons, wood);
     translate([depth-6*wood-backpocket_height,height-4*wood-arduino_width+holdback_r])
       square([ear_upper, arduino_width-holdback_l-holdback_r]);
+    //cable canal for usb
+    translate([depth-6*wood-backpocket_height+2.5,3*wood+2.5]) circle(2.5);
   }
 }
 module p_sidewall_r() {
