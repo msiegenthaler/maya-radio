@@ -39,12 +39,14 @@ module front_cover(width, height, grill_radius, grill_res, buttons, button_size)
   }
 }
 
-module back_inner(width, height, buttons, inner_offset, material, aroundMaterial, innerMaterial)
+module back_inner(width, height, cutout_overlap, buttons, inner_offset, material, aroundMaterial, innerMaterial)
 {
   button_xs = vector_uniq(vector_extract(buttons, 0));
   button_ys = vector_uniq(vector_extract(buttons, 1));
   difference() {
     side_inner(width, height, material, aroundMaterial);
+    //Cutout for access from outside
+    back_cutout(cutout_overlap, width, height, inner_offset, innerMaterial);
     // horizontal inner tabs
     translate([inner_offset,aroundMaterial])
       rotate([0,0,90]) woodclick(height-2*aroundMaterial, innerMaterial);
@@ -61,9 +63,25 @@ module back_inner(width, height, buttons, inner_offset, material, aroundMaterial
   }
 }
 
-module back_cover(width, height)
+module back_cover(width, height, inner_offset, material)
 {
-  side_cover(width, height);
+  difference() {
+    side_cover(width, height);
+    back_cutout(0, width, height, inner_offset, material);
+  }
+}
+
+module back_cutout(inset, width, height, middle_offset, material) {
+  leftover = 10;
+  intersection() {
+    offset(-inset) union() {
+      translate([height/2,height/2])
+        circle(height/2-leftover);
+      translate([height/2,height/2])
+        square([height/2,height/2-leftover]);
+    }
+    square([middle_offset-material, height]);
+  }
 }
 
 

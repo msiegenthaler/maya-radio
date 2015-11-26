@@ -39,6 +39,7 @@ if (width-2*middle_offset < arduino_length)
 if (height < arduino_width+battery_width+6*wood)
   echo("WARNING: Arduino and battery do not fit (in width)");
 
+cutout_overlap = 15;
 
 // Buttons
 use <utils.scad>
@@ -210,11 +211,11 @@ module p_front_inner()
               buttons, button_holdback_diameter, button_holdback_outing,
               wood, wood, wood);
 module p_back_inner()
-  back_inner(width, height, buttons, height/2+grill_radius, wood, wood, wood);
+  back_inner(width, height, cutout_overlap, buttons, height/2+grill_radius, wood, wood, wood);
 module p_front_cover()
   front_cover(width, height, grill_radius, grill_resolution, buttons, button_size);
 module p_back_cover()
-  back_cover(width, height);
+  back_cover(width, height, middle_offset, wood);
 module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
