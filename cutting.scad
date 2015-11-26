@@ -35,6 +35,9 @@ arduino_length = 103;
 battery_width = 50;
 battery_height = 20;
 battery_board_width = 58;
+battery_board_height = 11;
+battery_board_usb_height = 4;
+usb_width = 12; usb_height = 9;
 backpocket_height = arduino_height;
 if (width-2*middle_offset < arduino_length)
   echo("WARNING: Arduino does not fit (in length)");
@@ -207,7 +210,7 @@ module 3d_body()
   //Electronics
   translate([width/2-35, wood*3, -depth+backpocket_height+2*wood-battery_height])
     battery();
-  translate([width/2+battery_board_width/2, wood*3, -depth+wood]) rotate([0,180,0])
+  translate([width-middle_offset+wood, (height-battery_board_width)/2, -depth+wood]) rotate([90,0,90])
     battery_board();
   translate([width-middle_offset-arduino_length, height-54-wood*3, -depth+2*wood])
     translate([0,arduino_width,arduino_height]) rotate([180,0,0])
@@ -246,12 +249,22 @@ module p_front_inner()
   front_inner(width, height, grill_radius,
               buttons, button_holdback_diameter, button_holdback_outing,
               wood, wood, wood);
-module p_back_inner()
-  back_inner(width, height, cutout_overlap, buttons, height/2+grill_radius, wood, wood, wood);
+module p_back_inner() {
+  difference() {
+    back_inner(width, height, cutout_overlap, buttons, height/2+grill_radius, wood, wood, wood);
+    translate([width-middle_offset+wood, (height-battery_board_width)/2])
+      square([battery_board_height, battery_board_width]);
+  }
+}
 module p_front_cover()
   front_cover(width, height, grill_radius, grill_resolution, buttons, button_size);
-module p_back_cover()
-  back_cover(width, height, cutout_overlap, middle_offset, wood);
+module p_back_cover() {
+  difference() {
+    back_cover(width, height, cutout_overlap, middle_offset, wood);
+    translate([width-middle_offset+wood-(usb_height-battery_board_usb_height)/2, (height-usb_width)/2])
+      square([usb_height, usb_width]);
+  }
+}
 module p_back_screwholder()
   back_screwholder(width, height, cutout_overlap, middle_offset, wood);
 module p_back_screwholder2()
@@ -328,11 +341,11 @@ module battery() {
   color("SteelBlue") cube([70, battery_width, battery_height]);
 }
 module battery_board() {
-  h = 11; uw = 9; protude = 2;
-  color("LightSteelBlue") translate([0,0,-h]) union() {
-    linear_extrude(h) battery_board_base();
+  uw = 9; protude = 2;
+  color("LightSteelBlue") union() {
+    linear_extrude(battery_board_height) battery_board_base();
     translate([(battery_board_width-uw)/2,-protude,0])
-      cube([uw,protude,4]);
+      cube([uw,protude,battery_board_usb_height]);
   }
 }
 module battery_board_base() {
