@@ -46,6 +46,16 @@ function vector_uniq(vector) =
 function vector_filter(vector, i, value) =
   vector_flatten([for (v = vector) v[i]==value ? [v] : [] ]);
 
+// Sorts a vector. Taken from the openscad manual (quicksort).
+function vector_sort(arr) = !(len(arr)>0) ? [] : let(
+    pivot   = arr[floor(len(arr)/2)],
+    lesser  = [ for (y = arr) if (y  < pivot) y ],
+    equal   = [ for (y = arr) if (y == pivot) y ],
+    greater = [ for (y = arr) if (y  > pivot) y ]
+) concat(
+    vector_sort(lesser), equal, vector_sort(greater)
+);
+
 
 // Bending
 //---------
