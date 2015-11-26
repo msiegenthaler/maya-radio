@@ -14,7 +14,7 @@
 //------------
 height = 128; //min: backpocket should fit battery+arduino (Warning will be echo'd)
 width = 331;  //min: backpocket should fit the arduino (Warning will be echo'd)
-depth = 66;
+depth = 70;
 
 wood = 4;
 
