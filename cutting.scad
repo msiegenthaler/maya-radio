@@ -43,6 +43,7 @@ if (height < arduino_width+battery_width+6*wood)
 battery_board_width = 58;
 battery_board_width_low = 49; //where it meets the bottom
 battery_board_height = 11;
+battery_board_depth = 21;
 battery_board_usb_height = 4;
 battery_board_usb_offset = 1;
 usb_width = 12; usb_height = 9;
@@ -324,19 +325,23 @@ module p_sidewall_l() {
 module p_sidewall_r() {
   difference() {
     sidewall(height, depth, backpocket_height, buttons, wood);
-    //cable canal
+    //cable canals
+    echo(battery_board_height);
     translate([depth-backpocket_height+wood-3, (height-2*wood)*.88]) circle(2);
+    translate([depth-5*wood-battery_board_depth+1.5, (height-2*wood)*.4]) circle(1.5);
   }
 }
 module p_battery_board_case(i) {
-  w = 20; h = 20; tw=50;
-  battery_board_case(battery_board_width+w, battery_board_height+h) {
+  w = battery_board_width + 2*10;
+  h = battery_board_depth-wood + 10;
+  tw = 50;
+  battery_board_case(w, h) {
     if (i<woods_for_battery_board)
       translate([0,-wood]) battery_board_base();
   }
   if (middle_offset+wood-i*wood >= height/2+grill_radius) {
-    translate([-tw/2,h+battery_board_height])
-      square([50,depth-h-battery_board_height-6*wood]);
+    translate([-tw/2,h])
+      square([50,depth-h-6*wood]);
   }
   if (i==woods_for_battery_board) {
     translate([-20,-wood]) square([2*wood,wood]);
@@ -391,7 +396,7 @@ module battery_board() {
   }
 }
 module battery_board_base() {
-  h = 21;
+  h = battery_board_depth;
   module half()
     polygon([[0,0], [0,12],[4,16],[8,h],[23,h],
       [battery_board_width/2,h],[battery_board_width/2,0]]);
