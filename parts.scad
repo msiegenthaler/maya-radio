@@ -204,7 +204,7 @@ module side_cover(width, height)
 module around(width, height, depth, materialThickness, sideMaterialThickness)
 {
   basewidth = width - height;
-  wrapside = height*PI/2 * 1.05; // add 5% to reduce the stress on the material
+  wrapside = (height-2*materialThickness)*PI/2 * 0.99; // remove 1% (experimental)
   length = 2*(basewidth + wrapside);
 
   offset = basewidth/2;
