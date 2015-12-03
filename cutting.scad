@@ -297,11 +297,11 @@ module p_around()
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y),
     middle_offset, backpocket_height+wood, width-2*middle_offset, inner_depth, wood,
-    button_holdback_diameter, wood, button_holdback_outing);
+    button_holdback_diameter, 0, button_holdback_outing);
 module p_switch_plane_v(x)
   switch_plane_vertical(vector_filter(buttons, 0, x),
       wood, backpocket_height+wood, height-2*wood, inner_depth, wood,
-      button_holdback_diameter, wood, button_holdback_outing);
+      button_holdback_diameter, 0, button_holdback_outing);
 module p_middle_pane()
   middle_pane(width, height, buttons, height/2+grill_radius, wood, wood, wood);
 module p_speaker_holder_l()
