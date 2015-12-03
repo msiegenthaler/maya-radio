@@ -295,7 +295,7 @@ module p_back_screwholder2()
 module p_around()
   around(width, height, around_depth, wood, wood);
 module p_switch_plane_h(y)
-  switch_plane_horizontal(vector_filter(buttons, 1, y),
+  switch_plane_horizontal(vector_filter(buttons, 1, y), buttons,
     middle_offset, backpocket_height+wood, width-2*middle_offset, inner_depth, wood,
     button_holdback_diameter, 0, button_holdback_outing);
 module p_switch_plane_v(x)

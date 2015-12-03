@@ -246,17 +246,21 @@ module buttons_holes(buttons, button_size, outing, outing_material) {
   }
 }
 
-module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth, material, holdback_diameter, holdback_inset, holdback_outing)
+module switch_plane_horizontal(buttons, all_buttons, offset, backpocket_height, width, depth, material, holdback_diameter, holdback_inset, holdback_outing)
 {
   canal = 2;
+  xs = vector_sort(vector_uniq(vector_extract(all_buttons, 0)));
   top_depth = depth - backpocket_height;
+  cutout_depth = (depth - holdback_inset - 12) / 2 + holdback_inset + 12;
   union() {
     difference() {
       translate([offset,0]) square([width, top_depth]);
       for (b=buttons)
         translate([b[0],0]) switch_holder(false, depth, material, holdback_diameter, holdback_inset);
+      //ensure cutouts for crossing wood
+      for (x=xs)
+        translate([x-material/2,0]) square([material, cutout_depth]);
       //cable canals
-      xs = vector_sort(vector_extract(buttons, 0));
       for (i=[1:len(xs)-1]) {
         middle = (xs[i-1] + xs[i]) / 2;
         translate([middle, top_depth-5]) circle(canal);
@@ -276,8 +280,8 @@ module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth,
     translate([width+offset-material,-material]) square([material, material]);
     //back tabs
     translate([0, top_depth]) {
-      for (b=buttons) {
-        translate([b[0]-1.5*material,0]) square([3*material,material]);
+      for (x=xs) {
+        translate([x-1.5*material,0]) square([3*material,material]);
       }
     }
   }
@@ -329,9 +333,8 @@ module middle_pane(width, height, buttons, inner_offset, material, aroundMateria
     }
     // horizontal inner tabs
     for (y = vector_sort(vector_uniq(vector_extract(buttons, 1)))) {
-      for (b = vector_filter(buttons, 1, y)) {
-        translate([b[0]-1.5*material,b[1]-innerMaterial/2]) square([3*material,material]);
-      }
+      for (x = button_xs)
+        translate([x-1.5*material,y-innerMaterial/2]) square([3*material,material]);
     }
     // vertical inner tabs
     button_xs = vector_sort(vector_uniq(vector_extract(buttons, 0)));
