@@ -113,12 +113,11 @@ module back_cutout(layer, inset, width, height, middle_offset, material) {
   module screw_positions() {
     b = middle_offset-height/2-material-screw*3;
     d = height/2 - leftover - inset/2;
-    a = acos(b/d)+90;
-    translate([height/2,height/2]) {
-      translate([-d, 0]) children();
-      translate([b, d]) children();
-      translate([sin(a)*d, cos(a)*d]) children();
-    }
+    a = acos(b/d) + 90;
+    as = [a+120,a+240,a];
+    for (a = as)
+      translate([sin(a)*d+height/2, cos(a)*d+height/2])
+        children();
   }
   module screws() screw_positions() circle(d=screw);
   module border() square([middle_offset-material, height]);
