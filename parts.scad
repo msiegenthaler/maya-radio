@@ -103,9 +103,9 @@ module back_cutout(layer, inset, width, height, middle_offset, material) {
     intersection() {
       union() {
         translate([height/2,height/2])
-          circle(height/2);
+          circle(height/2-material);
         translate([height/2,height/2])
-          square([height,height/2]);
+          square([height,height/2-material]);
       }
       square([middle_offset-material,height]);
     }
