@@ -1,5 +1,5 @@
-// lasercut();
-3d_body();
+lasercut();
+// 3d_body();
 
 //Lasercuts for testing stuff
 //switch_lasercut_test();
@@ -26,7 +26,7 @@ led_radius = 3;
 led_count = 5;  //per side
 
 grill_radius = 50;
-grill_resolution = 4;
+grill_resolution = 1;
 grill_offset = 4;
 
 arduino_height = 28;

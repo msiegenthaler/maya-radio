@@ -33,7 +33,7 @@ module livingHinge(width, height, materialThickness)
   count = round(width / materialThickness);
   hingeWidth = width / count;
 
-  cutWidth = .01;
+  cutWidth = .05;
   maxHingeLength = 35;
   connectingLength = materialThickness / 2;
   hingesPerRow = ceil(height / maxHingeLength);
