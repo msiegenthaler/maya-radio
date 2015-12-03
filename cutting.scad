@@ -49,6 +49,13 @@ battery_board_usb_offset = 1;
 usb_width = 12; usb_height = 9;
 woods_for_battery_board = ceil(battery_board_height/wood);
 
+leather = 3;
+leather_base_length = 135;
+leather_add = 5;
+leather_side = 15;
+leather_screw = 3.1;
+leather_width = 20;
+
 cutout_overlap = 15;
 
 // Buttons
@@ -151,6 +158,9 @@ module lasercut() {
     translate([col3+battery_board_width/2+20, 2*(height+gap)+i*(depth-5*wood)])
       p_battery_board_case(i);
   }
+
+  color("blue") translate([-2*gap-around_depth, 0]) rotate(90)
+    p_leather_band();
 }
 
 module 3d_body()
@@ -198,6 +208,12 @@ module 3d_body()
   translate([width-height/2,height,-wood]) rotate([0,90,-90]) color("Turquoise")
     cylindric_bend([around_depth,height*PI/2,wood], height/2)
       linear_extrude(wood) square([around_depth, height*PI/2*1.05]);
+
+  //leather band
+  color("SlateGray")
+    translate([height/2+basewidth/2-(leather_base_length+leather_add)/2-leather_side, height+leather,
+               -depth/2-leather_width/2]) rotate([90,0,0]) linear_extrude(leather)
+      p_leather_band();
 
   //Inner structure
   color("Tan") for (button_x=button_xs) {
@@ -292,8 +308,13 @@ module p_back_screwholder()
   back_screwholder(width, height, cutout_overlap, middle_offset, wood);
 module p_back_screwholder2()
   back_screwholder2(width, height, cutout_overlap, middle_offset, wood);
-module p_around()
-  around(width, height, around_depth, wood, wood);
+module p_around() {
+  difference() {
+    around(width, height, around_depth, wood, wood);
+    translate([basewidth/2-leather_base_length/2,around_depth/2]) circle(d=leather_screw);
+    translate([basewidth/2+leather_base_length/2,around_depth/2]) circle(d=leather_screw);
+  }
+}
 module p_switch_plane_h(y)
   switch_plane_horizontal(vector_filter(buttons, 1, y), buttons,
     middle_offset, backpocket_height+wood, width-2*middle_offset, inner_depth, wood,
@@ -347,6 +368,13 @@ module p_battery_board_case(i) {
   if (i==woods_for_battery_board) {
     translate([-20,-wood]) square([2*wood,wood]);
     translate([20-2*wood,-wood]) square([2*wood,wood]);
+  }
+}
+module p_leather_band() {
+  difference() {
+    square([leather_base_length + leather_add + leather_side*2, leather_width]);
+    translate([leather_side, leather_width/2]) circle(d=leather_screw);
+    translate([leather_side + leather_base_length + leather_add, leather_width/2]) circle(d=leather_screw);
   }
 }
 
