@@ -254,7 +254,7 @@ module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth,
     difference() {
       translate([offset,0]) square([width, top_depth]);
       for (b=buttons)
-        translate([b[0],0]) switch_holder(false, top_depth, material, holdback_diameter, holdback_inset);
+        translate([b[0],0]) switch_holder(false, depth, material, holdback_diameter, holdback_inset);
       //cable canals
       xs = vector_sort(vector_extract(buttons, 0));
       for (i=[1:len(xs)-1]) {
@@ -275,7 +275,11 @@ module switch_plane_horizontal(buttons, offset, backpocket_height, width, depth,
     translate([offset,-material]) square([material, material]);
     translate([width+offset-material,-material]) square([material, material]);
     //back tabs
-    translate([offset, top_depth]) woodclick(width, material);
+    translate([0, top_depth]) {
+      for (b=buttons) {
+        translate([b[0]-1.5*material,0]) square([3*material,material]);
+      }
+    }
   }
 }
 
@@ -324,8 +328,11 @@ module middle_pane(width, height, buttons, inner_offset, material, aroundMateria
         middle_pane_hclick(height, button_ys, innerMaterial, aroundMaterial);
     }
     // horizontal inner tabs
-    for (y = button_ys) translate([inner_offset,y-innerMaterial/2])
-        woodclick(width-inner_offset*2, innerMaterial);
+    for (y = vector_sort(vector_uniq(vector_extract(buttons, 1)))) {
+      for (b = vector_filter(buttons, 1, y)) {
+        translate([b[0]-1.5*material,b[1]-innerMaterial/2]) square([3*material,material]);
+      }
+    }
     // vertical inner tabs
     button_xs = vector_sort(vector_uniq(vector_extract(buttons, 0)));
     for (x = button_xs) {
