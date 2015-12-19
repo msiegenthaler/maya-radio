@@ -87,7 +87,7 @@ function button_row(y) =
 //--------------
 use <parts.scad>
 
-around_side_length = (height-2*wood)*PI/2 * .99;
+around_side_length = (height-2*wood)*PI/2;
 basewidth = width-height;
 middle_offset = height/2+grill_radius;
 button_xs = vector_uniq(vector_extract(buttons, 0));
