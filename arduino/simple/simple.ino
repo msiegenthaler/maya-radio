@@ -87,7 +87,7 @@ void initialSettings() {
   setColor(2, 30, 30, 100);
   setColor(3, 50, 30, 0);
 
-  setVolume(50);
+  setVolume(80);
 }
 
 
@@ -98,16 +98,24 @@ void setVolume(uint8_t vol) {
   volume = vol;
 }
 
+void play(int number) {
+  String track = "track";
+  track += (number / 100) % 10;
+  track += (number / 10) % 10;
+  track += number % 10;
+  track += ".mp3";
+  Serial.print("Starting to play ");
+  Serial.println(track);
+  musicPlayer.startPlayingFile(track.c_str());
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
 
   for (int i = 0; i < 12; i++) {
     if (button[i].onPressed()) {
-      //TODO select the file..
-      Serial.println("Starting to play");
       musicPlayer.stopPlaying();
-      musicPlayer.startPlayingFile("track001.mp3");
+      play(i+1);
       playing = true;
     }
   }
