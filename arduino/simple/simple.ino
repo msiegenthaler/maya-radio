@@ -40,6 +40,19 @@ RBD::Button button_up(35);
 RBD::Button button_down(34);
 
 
+/** Colors */
+#define COLOR_COUNT 7
+int COLORS[COLOR_COUNT][3] = {
+  {200,   0,   0},
+  {  0, 200,   0},
+  {  0,   0, 200},
+  {200, 120,   0},
+  {200, 120, 120},
+  {200,   0, 120},
+  {  0, 200, 200},
+};
+
+
 
 /**************** Button stuff ****************/
 #define SHIELD_CS     18      // VS1053 chip select pin (output)
@@ -68,6 +81,8 @@ void setup() {
   }
   SD.begin(CARDCS);
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);
+
+  randomSeed(analogRead(0));
 
   initButtons();
   initialSettings();
@@ -117,6 +132,13 @@ void loop() {
       musicPlayer.stopPlaying();
       play(i+1);
       playing = true;
+
+      for (int l = 0; l < 4; l++) {
+        for (int c = 0; c < 3; c++) {
+          int *color = COLORS[random(COLOR_COUNT)];
+          setColor(l, color[0], color[1], color[2]);
+        }
+      }
     }
   }
 
@@ -128,14 +150,8 @@ void loop() {
       setColor(1, 50, 30, 0);
       setColor(2, 30, 30, 100);
       setColor(3, 50, 30, 0);
-    } else {
-      setColor(0, 200, 100, 100);
-      setColor(1, 200, 30, 0);
-      setColor(2, 200, 10, 100);
-      setColor(3, 200, 30, 200);
     }
   }
-
 
   if (button_up.onPressed()) {
     Serial.println("Louder");
