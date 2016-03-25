@@ -39,6 +39,8 @@ RBD::Button button[12] = {button_0, button_1, button_2, button_3, button_4, butt
 RBD::Button button_up(35);
 RBD::Button button_down(34);
 
+#define OFF_PIN 36
+
 
 /** Colors */
 #define COLOR_COUNT 7
@@ -69,6 +71,8 @@ bool playing = false;
 #define MIN_VOLUME   250
 uint8_t volume = 0;
 
+#define INACTIVITY_TIMEOUT 300000 //ms
+unsigned long lastAction;
 
 void setup() {
   Serial.begin(19200);
@@ -86,6 +90,9 @@ void setup() {
 
   initButtons();
   initialSettings();
+
+  pinMode(OFF_PIN, OUTPUT);
+  lastAction = millis();
 }
 
 /** Reset the button pressed state. */
@@ -111,6 +118,8 @@ void setVolume(uint8_t vol) {
   Serial.println(vol);
   musicPlayer.setVolume(vol, vol);
   volume = vol;
+
+  lastAction = millis();
 }
 
 void play(int number) {
@@ -122,6 +131,8 @@ void play(int number) {
   Serial.print("Starting to play ");
   Serial.println(track);
   musicPlayer.startPlayingFile(track.c_str());
+
+  lastAction = millis();
 }
 
 void loop() {
@@ -143,6 +154,7 @@ void loop() {
   }
 
   if (playing) {
+    lastAction = millis();
     if (musicPlayer.stopped()) {
       Serial.println("Song ended.");
       playing = false;  
@@ -162,6 +174,14 @@ void loop() {
     Serial.println("Softer");
     if (volume + DELTA_VOLUME <= MIN_VOLUME)
       setVolume(volume + DELTA_VOLUME);
+  }
+
+  unsigned long sinceLast = millis() - lastAction;
+  if (sinceLast < 0) lastAction = millis();
+  else if (sinceLast > INACTIVITY_TIMEOUT) {
+    Serial.println("Turing off..");
+    digitalWrite(OFF_PIN, HIGH);
+    lastAction = millis();
   }
 
   delay(100);
