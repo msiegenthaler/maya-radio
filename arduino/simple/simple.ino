@@ -32,12 +32,13 @@ RBD::Button button_8(40);
 RBD::Button button_9(41);
 RBD::Button button_10(38);
 RBD::Button button_11(39);
-// array of song-selects
-RBD::Button button[12] = {button_0, button_1, button_2, button_3, button_4, button_5, button_6, button_7,
-  button_8, button_9, button_10, button_11};
 //Volume buttons
 RBD::Button button_up(35);
 RBD::Button button_down(34);
+// array of song-selects
+RBD::Button button[14] = {button_0, button_1, button_2, button_3, button_4, button_5, button_6, button_7,
+  button_8, button_9, button_10, button_11,
+  button_up, button_down};
 
 #define OFF_PIN 36
 
@@ -140,7 +141,7 @@ void play(int number) {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  for (int i = 0; i < 12; i++) {
+  for (int i = 0; i < 14; i++) { //also map to louder/softer
     if (button[i].onReleased()) {
       musicPlayer.stopPlaying();
       play(i+1);
@@ -175,6 +176,7 @@ void loop() {
     setColor(3, 25*factor, 15*factor, 0);
   }
 
+  /*
   if (button_up.onReleased()) {
     Serial.println("Louder");
     if (volume - DELTA_VOLUME >= MAX_VOLUME)
@@ -185,6 +187,7 @@ void loop() {
     if (volume + DELTA_VOLUME <= MIN_VOLUME)
       setVolume(volume + DELTA_VOLUME);
   }
+  */
 
   unsigned long sinceLast = millis() - lastAction;
   if (sinceLast < 0) lastAction = millis();
