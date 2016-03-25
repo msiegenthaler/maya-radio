@@ -74,6 +74,8 @@ uint8_t volume = 0;
 #define INACTIVITY_TIMEOUT 300000 //ms
 unsigned long lastAction;
 
+int idleFadingPos = 0;
+
 void setup() {
   Serial.begin(19200);
   Serial.println("Maya's radio - fading lights mode");
@@ -163,6 +165,14 @@ void loop() {
       setColor(2, 30, 30, 100);
       setColor(3, 50, 30, 0);
     }
+  } else {
+    idleFadingPos += 1;
+    if (idleFadingPos > 20) idleFadingPos = -20;
+    int factor = abs(idleFadingPos)/3;
+    setColor(0, 15*factor, 50*factor, 50*factor);
+    setColor(1, 25*factor, 15*factor, 0);
+    setColor(2, 15*factor, 15*factor, 50*factor);
+    setColor(3, 25*factor, 15*factor, 0);
   }
 
   if (button_up.onReleased()) {
@@ -184,7 +194,7 @@ void loop() {
     lastAction = millis();
   }
 
-  delay(100);
+  delay(50);
 }
 
 
