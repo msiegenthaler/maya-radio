@@ -102,7 +102,7 @@ void initialSettings() {
   setColor(2, 30, 30, 100);
   setColor(3, 50, 30, 0);
 
-  setVolume(80);
+  setVolume(40);
 }
 
 
