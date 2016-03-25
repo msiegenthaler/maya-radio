@@ -91,9 +91,9 @@ void setup() {
 /** Reset the button pressed state. */
 void initButtons() {
   for (int i = 0; i < 12; i++)
-    button[i].onPressed();
-  button_up.onPressed();
-  button_down.onPressed();
+    button[i].onReleased();
+  button_up.onReleased();
+  button_down.onReleased();
 }
 
 void initialSettings() {
@@ -128,7 +128,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   for (int i = 0; i < 12; i++) {
-    if (button[i].onPressed()) {
+    if (button[i].onReleased()) {
       musicPlayer.stopPlaying();
       play(i+1);
       playing = true;
@@ -153,12 +153,12 @@ void loop() {
     }
   }
 
-  if (button_up.onPressed()) {
+  if (button_up.onReleased()) {
     Serial.println("Louder");
     if (volume - DELTA_VOLUME >= MAX_VOLUME)
       setVolume(volume - DELTA_VOLUME);
   }
-  if (button_down.onPressed()) {
+  if (button_down.onReleased()) {
     Serial.println("Softer");
     if (volume + DELTA_VOLUME <= MIN_VOLUME)
       setVolume(volume + DELTA_VOLUME);
